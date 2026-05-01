@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Su & Karan's Baby Shower Trivia</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #f9a8c9;
+    --pink-deep: #e879a0;
+    --pink-light: #fde8f2;
+    --blue: #93c5fd;
+    --blue-deep: #3b82f6;
+    --blue-light: #dbeafe;
+    --cream: #fffaf7;
+    --text: #3d2c3e;
+    --text-light: #7c6b7e;
+    --shadow: 0 8px 32px rgba(232, 121, 160, 0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--cream);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -120px; left: -120px;
+    width: 420px; height: 420px;
+    background: radial-gradient(circle, #fbd3e9 0%, transparent 70%);
+    z-index: 0;
+    pointer-events: none;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -100px; right: -100px;
+    width: 380px; height: 380px;
+    background: radial-gradient(circle, #bfdbfe 0%, transparent 70%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .card {
+    background: white;
+    border-radius: 28px;
+    box-shadow: var(--shadow);
+    padding: 36px 28px;
+    width: 100%;
+    max-width: 460px;
+    position: relative;
+    z-index: 1;
+    animation: cardIn 0.5s cubic-bezier(.22,1,.36,1) both;
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(28px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .decorative-dots {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+  .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .dot.pink { background: var(--pink); }
+  .dot.blue { background: var(--blue); }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--text);
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  h1 span.pink { color: var(--pink-deep); }
+  h1 span.blue { color: var(--blue-deep); }
+
+  .subtitle {
+    text-align: center;
+    color: var(--text-light);
+    font-size: 0.95rem;
+    margin-bottom: 28px;
+  }
+
+  .emoji-row {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 18px;
+    letter-spacing: 6px;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid #f0e0f0;
+    border-radius: 14px;
+    font-size: 1rem;
+    font-family: 'Nunito', sans-serif;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+    background: var(--pink-light);
+  }
+  input[type="text"]:focus {
+    border-color: var(--pink-deep);
+  }
+  input[type="text"]::placeholder { color: #c9a8c9; }
+
+  .btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 14px;
+    font-size: 1.05rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    margin-top: 14px;
+  }
+  .btn:active { transform: scale(0.97); }
+
+  .btn-pink {
+    background: linear-gradient(135deg, var(--pink-deep), #c2185b);
+    color: white;
+    box-shadow: 0 4px 18px rgba(232,121,160,0.35);
+  }
+  .btn-pink:hover { box-shadow: 0 6px 24px rgba(232,121,160,0.5); transform: translateY(-1px); }
+
+  .btn-blue {
+    background: linear-gradient(135deg, var(--blue-deep), #1d4ed8);
+    color: white;
+    box-shadow: 0 4px 18px rgba(59,130,246,0.3);
+  }
+  .btn-blue:hover { box-shadow: 0 6px 24px rgba(59,130,246,0.45); transform: translateY(-1px); }
+
+  .btn-outline {
+    background: white;
+    color: var(--text-light);
+    border: 2px solid #e8d8ee;
+    margin-top: 10px;
+  }
+
+  /* Quiz */
+  .progress-bar-wrap {
+    background: #f0e8f8;
+    border-radius: 99px;
+    height: 8px;
+    margin-bottom: 22px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, var(--pink-deep), var(--blue-deep));
+    transition: width 0.4s ease;
+  }
+
+  .q-counter {
+    font-size: 0.82rem;
+    color: var(--text-light);
+    text-align: right;
+    margin-bottom: 6px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .question-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.22rem;
+    color: var(--text);
+    margin-bottom: 22px;
+    line-height: 1.5;
+    min-height: 60px;
+  }
+
+  .options-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+  }
+
+  .option-btn {
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 14px;
+    border: 2px solid #f0e0f0;
+    background: white;
+    text-align: left;
+    font-size: 0.97rem;
+    font-family: 'Nunito', sans-serif;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.18s;
+    font-weight: 600;
+  }
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--pink);
+    background: var(--pink-light);
+    transform: translateX(3px);
+  }
+  .option-btn.correct {
+    border-color: #22c55e;
+    background: #f0fdf4;
+    color: #166534;
+  }
+  .option-btn.wrong {
+    border-color: #ef4444;
+    background: #fef2f2;
+    color: #991b1b;
+  }
+  .option-btn.reveal-correct {
+    border-color: #22c55e;
+    background: #f0fdf4;
+    color: #166534;
+  }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-msg {
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-top: 16px;
+    min-height: 28px;
+    transition: opacity 0.3s;
+  }
+  .feedback-msg.correct { color: #22c55e; }
+  .feedback-msg.wrong { color: #ef4444; }
+
+  .next-btn-wrap {
+    margin-top: 18px;
+  }
+
+  /* Results */
+  .score-circle {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--pink-light), var(--blue-light));
+    border: 4px solid white;
+    box-shadow: 0 6px 24px rgba(232,121,160,0.22);
+  }
+  .score-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    color: var(--text);
+    line-height: 1;
+  }
+  .score-label {
+    font-size: 0.78rem;
+    color: var(--text-light);
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .result-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--text);
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .result-sub {
+    text-align: center;
+    color: var(--text-light);
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+  }
+
+  .review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 22px;
+    max-height: 260px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .review-item {
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 0.88rem;
+  }
+  .review-item.correct-r { background: #f0fdf4; border-left: 3px solid #22c55e; }
+  .review-item.wrong-r   { background: #fef2f2; border-left: 3px solid #ef4444; }
+  .review-q { font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .review-a { color: var(--text-light); }
+  .review-a span { font-weight: 700; }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 400px) {
+    .card { padding: 28px 16px; }
+    h1 { font-size: 1.65rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="card" id="screen-welcome">
+  <div class="decorative-dots">
+    <div class="dot pink"></div>
+    <div class="dot blue"></div>
+    <div class="dot pink"></div>
+    <div class="dot blue"></div>
+    <div class="dot pink"></div>
+  </div>
+  <div class="emoji-row">🍼 👶 🎀</div>
+  <h1>Welcome to<br><span class="pink">Su</span> & <span class="blue">Karan</span>'s<br>Baby Shower!</h1>
+  <p class="subtitle" style="margin-top:10px;">Test how well you know the happy couple & all things baby! 🌸</p>
+  <input type="text" id="player-name" placeholder="Enter your name..." maxlength="30" />
+  <button class="btn btn-pink" onclick="startGame()">Let's Play! 🎉</button>
+</div>
+
+<div class="card hidden" id="screen-quiz">
+  <div class="q-counter" id="q-counter">Question 1 of 12</div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+  </div>
+  <div class="question-text" id="question-text"></div>
+  <div class="options-grid" id="options-grid"></div>
+  <div class="feedback-msg" id="feedback-msg"></div>
+  <div class="next-btn-wrap">
+    <button class="btn btn-blue hidden" id="next-btn" onclick="nextQuestion()">Next Question →</button>
+  </div>
+</div>
+
+<div class="card hidden" id="screen-results">
+  <div class="decorative-dots">
+    <div class="dot blue"></div>
+    <div class="dot pink"></div>
+    <div class="dot blue"></div>
+    <div class="dot pink"></div>
+    <div class="dot blue"></div>
+  </div>
+  <div class="score-circle">
+    <div class="score-number" id="final-score">0</div>
+    <div class="score-label">CORRECT</div>
+  </div>
+  <div class="result-title" id="result-title">Great job!</div>
+  <div class="result-sub" id="result-sub"></div>
+  <div class="review-list" id="review-list"></div>
+  <button class="btn btn-pink" onclick="restart()">Play Again 🔄</button>
+</div>
+
+<script>
+const questions = [
+  {
+    q: "What country does the name 'Su' originate from?",
+    options: ["Japan", "China", "Korea", "Vietnam"],
+    answer: 0
+  },
+  {
+    q: "What does the name 'Karan' mean in Sanskrit?",
+    options: ["Warrior", "Instrument / Means", "Sun", "River"],
+    answer: 1
+  },
+  {
+    q: "On average, how many diapers does a newborn use per day?",
+    options: ["4–5", "6–8", "10–12", "14–16"],
+    answer: 2
+  },
+  {
+    q: "At what age do most babies say their first word?",
+    options: ["6 months", "9 months", "Around 12 months", "18 months"],
+    answer: 2
+  },
+  {
+    q: "Which sense is most developed in a newborn baby?",
+    options: ["Sight", "Hearing", "Touch", "Smell"],
+    answer: 3
+  },
+  {
+    q: "How long is a full-term pregnancy on average?",
+    options: ["36 weeks", "38 weeks", "40 weeks", "42 weeks"],
+    answer: 2
+  },
+  {
+    q: "What is the soft spot on a baby's head called?",
+    options: ["Fontanelle", "Cranium", "Suture", "Vertex"],
+    answer: 0
+  },
+  {
+    q: "What color are most babies' eyes at birth?",
+    options: ["Brown", "Green", "Blue or gray", "Black"],
+    answer: 2
+  },
+  {
+    q: "Which of these is NOT a common newborn reflex?",
+    options: ["Rooting reflex", "Grasp reflex", "Walking reflex", "Blinking reflex... wait, it IS one! (trick!) — Which is truly not? Swimming reflex"],
+    options: ["Rooting", "Grasp", "Swimming reflex (babies can't actually swim!)", "Startle (Moro)"],
+    answer: 2
+  },
+  {
+    q: "Su and Karan are celebrating — what's the best gift for a new baby?",
+    options: ["Lots of toys", "Your love and presence 💕", "Expensive clothes", "Sugar cookies"],
+    answer: 1
+  },
+  {
+    q: "At how many weeks can a baby's heartbeat typically be detected via ultrasound?",
+    options: ["4 weeks", "6 weeks", "10 weeks", "14 weeks"],
+    answer: 1
+  },
+  {
+    q: "Which vitamin do babies need that breast milk lacks enough of?",
+    options: ["Vitamin A", "Vitamin C", "Vitamin D", "Vitamin B12"],
+    answer: 2
+  }
+];
+
+let playerName = '';
+let currentQ = 0;
+let score = 0;
+let userAnswers = [];
+let answered = false;
+
+function showScreen(id) {
+  document.querySelectorAll('.card').forEach(c => c.classList.add('hidden'));
+  const el = document.getElementById(id);
+  el.classList.remove('hidden');
+  el.style.animation = 'none';
+  el.offsetHeight;
+  el.style.animation = 'cardIn 0.5s cubic-bezier(.22,1,.36,1) both';
+}
+
+function startGame() {
+  playerName = document.getElementById('player-name').value.trim();
+  if (!playerName) { 
+    document.getElementById('player-name').focus();
+    document.getElementById('player-name').style.borderColor = '#e879a0';
+    return; 
+  }
+  currentQ = 0;
+  score = 0;
+  userAnswers = [];
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  answered = false;
+  const q = questions[currentQ];
+  const total = questions.length;
+
+  document.getElementById('q-counter').textContent = `Question ${currentQ + 1} of ${total}`;
+  document.getElementById('progress-bar').style.width = `${(currentQ / total) * 100}%`;
+  document.getElementById('question-text').textContent = q.q;
+  document.getElementById('feedback-msg').textContent = '';
+  document.getElementById('feedback-msg').className = 'feedback-msg';
+  document.getElementById('next-btn').classList.add('hidden');
+
+  const grid = document.getElementById('options-grid');
+  grid.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = opt;
+    btn.onclick = () => selectAnswer(i);
+    grid.appendChild(btn);
+  });
+}
+
+function selectAnswer(selected) {
+  if (answered) return;
+  answered = true;
+
+  const q = questions[currentQ];
+  const correct = q.answer;
+  const btns = document.querySelectorAll('.option-btn');
+  const feedback = document.getElementById('feedback-msg');
+
+  btns.forEach(b => b.disabled = true);
+
+  if (selected === correct) {
+    btns[selected].classList.add('correct');
+    feedback.textContent = '✅ Correct! Nice one, ' + playerName + '!';
+    feedback.className = 'feedback-msg correct';
+    score++;
+    userAnswers.push({ correct: true, selected, correctIdx: correct });
+  } else {
+    btns[selected].classList.add('wrong');
+    btns[correct].classList.add('reveal-correct');
+    feedback.textContent = '❌ Not quite! The right answer is highlighted above.';
+    feedback.className = 'feedback-msg wrong';
+    userAnswers.push({ correct: false, selected, correctIdx: correct });
+  }
+
+  document.getElementById('next-btn').classList.remove('hidden');
+  if (currentQ === questions.length - 1) {
+    document.getElementById('next-btn').textContent = 'See Results 🎊';
+  } else {
+    document.getElementById('next-btn').textContent = 'Next Question →';
+  }
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= questions.length) {
+    showResults();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showResults() {
+  showScreen('screen-results');
+  const total = questions.length;
+  document.getElementById('final-score').textContent = `${score}/${total}`;
+
+  const pct = score / total;
+  let title, sub;
+  if (pct === 1)        { title = '🏆 Perfect Score!';     sub = `Wow ${playerName}, you know everything about babies and the happy couple!`; }
+  else if (pct >= 0.75) { title = '🌸 Amazing job!';        sub = `Great work, ${playerName}! Su & Karan would be impressed!`; }
+  else if (pct >= 0.5)  { title = '💕 Not bad at all!';     sub = `You're halfway there, ${playerName}! The baby will teach you the rest 😄`; }
+  else                   { title = '🍼 Baby steps!';         sub = `Don't worry ${playerName} — the baby's arrival will make you an expert!`; }
+
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-sub').textContent = sub;
+
+  const reviewList = document.getElementById('review-list');
+  reviewList.innerHTML = '';
+  userAnswers.forEach((ans, i) => {
+    const q = questions[i];
+    const div = document.createElement('div');
+    div.className = `review-item ${ans.correct ? 'correct-r' : 'wrong-r'}`;
+    div.innerHTML = `<div class="review-q">${ans.correct ? '✅' : '❌'} ${q.q}</div>
+      <div class="review-a">Correct answer: <span>${q.options[ans.correctIdx]}</span></div>`;
+    reviewList.appendChild(div);
+  });
+}
+
+function restart() {
+  document.getElementById('player-name').value = '';
+  showScreen('screen-welcome');
+}
+
+document.getElementById('player-name').addEventListener('keydown', e => {
+  if (e.key === 'Enter') startGame();
+});
+</script>
+</body>
+</html>
