@@ -17,7 +17,7 @@ const triviaQuestions = [
     {
         id: 3,
         question: "Where did Karan and Su meet?",
-        options: ["Through some friends", "At a dating website", "Arranged by parents/relatives", "College"],
+        options: ["Through some friends", "At a dating website", "Arranged by parents", "College"],
         correctAnswer: null
     },
     {
