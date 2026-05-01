@@ -550,7 +550,7 @@ function renderPlayerQuiz() {
         <div class="opts">
           ${q.opts.map(opt => `
             <button class="opt-btn ${chosen===opt?'chosen':''} ${chosen!==null&&chosen!==opt?'dimmed':''}"
-              style="${chosen===opt?`border-color:${color};background:${color}22`:''}
+              style="${chosen===opt?`border-color:${color};background:${color}22`:''}"
               onclick="pickAnswer('${opt.replace(/'/g,"\\'")}')">
               ${opt}
             </button>`).join("")}
