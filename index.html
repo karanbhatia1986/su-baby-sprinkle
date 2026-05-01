@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivia Game - Player</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .join-section, .game-section, .results-section {
+            display: none;
+        }
+
+        .join-section.active, .game-section.active, .results-section.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .question-card {
+            margin-bottom: 30px;
+        }
+
+        .question-text {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .question-number {
+            color: #667eea;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .options {
+            display: grid;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            text-align: left;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        .progress {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .status-message {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        .leaderboard {
+            margin-top: 30px;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .leaderboard-item.first {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            border-left-color: #ffa500;
+        }
+
+        .leaderboard-item.second {
+            background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);
+            border-left-color: #a0a0a0;
+        }
+
+        .leaderboard-item.third {
+            background: linear-gradient(135deg, #cd7f32 0%, #e8b482 100%);
+            border-left-color: #b5651d;
+        }
+
+        .player-rank {
+            font-size: 24px;
+            font-weight: 700;
+            margin-right: 15px;
+        }
+
+        .player-info {
+            flex: 1;
+        }
+
+        .player-name {
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .player-score {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .your-score {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .your-score h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .your-score .score {
+            font-size: 3em;
+            font-weight: 700;
+        }
+
+        .game-code {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .game-code strong {
+            color: #667eea;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Trivia Game</h1>
+
+        <!-- Join Section -->
+        <div class="join-section active">
+            <div class="input-group">
+                <label for="gameCode">Game Code</label>
+                <input type="text" id="gameCode" placeholder="Enter game code">
+            </div>
+            <div class="input-group">
+                <label for="playerName">Your Name</label>
+                <input type="text" id="playerName" placeholder="Enter your name">
+            </div>
+            <button id="joinBtn">Join Game</button>
+        </div>
+
+        <!-- Game Section -->
+        <div class="game-section">
+            <div class="game-code">
+                Game Code: <strong id="displayGameCode"></strong>
+            </div>
+            <div class="status-message" id="statusMessage">
+                Waiting for game to start...
+            </div>
+            <div class="progress" id="progress"></div>
+            <div id="questionsContainer"></div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section">
+            <div class="your-score">
+                <h2>Your Score</h2>
+                <div class="score" id="yourScore">0</div>
+            </div>
+            <h2 style="margin-bottom: 20px; color: #667eea; text-align: center;">🏆 Leaderboard</h2>
+            <div id="leaderboard"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getDatabase, ref, onValue, set, update, get } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+
+        const firebaseConfig = {
+  apiKey: "AIzaSyB47Qw26hMQcKr2sC4B8i772wrhTMKo8Ho",
+  authDomain: "su-baby-sprinkle.firebaseapp.com",
+  databaseURL: "https://su-baby-sprinkle-default-rtdb.firebaseio.com",
+  projectId: "su-baby-sprinkle",
+  storageBucket: "su-baby-sprinkle.firebasestorage.app",
+  messagingSenderId: "442824239099",
+  appId: "1:442824239099:web:b90411c9d63d96cdb8cd5e",
+  measurementId: "G-TQLMQ9K64W"
+};
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        let currentGameCode = '';
+        let currentPlayerName = '';
+        let playerAnswers = {};
+
+        // Join game
+        document.getElementById('joinBtn').addEventListener('click', async () => {
+            const gameCode = document.getElementById('gameCode').value.trim().toUpperCase();
+            const playerName = document.getElementById('playerName').value.trim();
+
+            if (!gameCode || !playerName) {
+                alert('Please enter both game code and your name');
+                return;
+            }
+
+            // Check if game exists
+            const gameRef = ref(db, `games/${gameCode}`);
+            const snapshot = await get(gameRef);
+
+            if (!snapshot.exists()) {
+                alert('Game not found. Please check the game code.');
+                return;
+            }
+
+            currentGameCode = gameCode;
+            currentPlayerName = playerName;
+
+            // Add player to game
+            const playerRef = ref(db, `games/${gameCode}/players/${playerName}`);
+            await set(playerRef, {
+                name: playerName,
+                answers: {},
+                score: 0,
+                joinedAt: Date.now()
+            });
+
+            // Switch to game section
+            document.querySelector('.join-section').classList.remove('active');
+            document.querySelector('.game-section').classList.add('active');
+            document.getElementById('displayGameCode').textContent = gameCode;
+
+            // Listen for game state changes
+            listenToGame();
+        });
+
+        function listenToGame() {
+            const gameRef = ref(db, `games/${currentGameCode}`);
+
+            onValue(gameRef, (snapshot) => {
+                const game = snapshot.val();
+                if (!game) return;
+
+                if (game.status === 'waiting') {
+                    showStatus('Waiting for game to start...');
+                } else if (game.status === 'playing') {
+                    showQuestions(game.questions);
+                } else if (game.status === 'finished') {
+                    showResults(game.players);
+                }
+            });
+        }
+
+        function showStatus(message) {
+            document.getElementById('statusMessage').style.display = 'block';
+            document.getElementById('statusMessage').textContent = message;
+            document.getElementById('questionsContainer').innerHTML = '';
+            document.getElementById('progress').textContent = '';
+        }
+
+        function showQuestions(questions) {
+            document.getElementById('statusMessage').style.display = 'none';
+
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            const totalQuestions = questions.length;
+            document.getElementById('progress').textContent = `${Object.keys(playerAnswers).length} / ${totalQuestions} answered`;
+
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+
+                const questionNumber = document.createElement('div');
+                questionNumber.className = 'question-number';
+                questionNumber.textContent = `Question ${index + 1} of ${totalQuestions}`;
+
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.textContent = q.question;
+
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'options';
+
+                q.options.forEach((option, optIndex) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'option';
+                    optionDiv.textContent = option;
+
+                    if (playerAnswers[q.id] === optIndex) {
+                        optionDiv.classList.add('selected');
+                    }
+
+                    optionDiv.addEventListener('click', () => selectAnswer(q.id, optIndex, questionDiv));
+                    optionsDiv.appendChild(optionDiv);
+                });
+
+                questionDiv.appendChild(questionNumber);
+                questionDiv.appendChild(questionText);
+                questionDiv.appendChild(optionsDiv);
+                container.appendChild(questionDiv);
+            });
+        }
+
+        async function selectAnswer(questionId, answerIndex, questionDiv) {
+            playerAnswers[questionId] = answerIndex;
+
+            // Update selected state
+            const options = questionDiv.querySelectorAll('.option');
+            options.forEach((opt, idx) => {
+                opt.classList.toggle('selected', idx === answerIndex);
+            });
+
+            // Save to Firebase
+            const answerRef = ref(db, `games/${currentGameCode}/players/${currentPlayerName}/answers/${questionId}`);
+            await set(answerRef, answerIndex);
+
+            // Update progress
+            const gameRef = ref(db, `games/${currentGameCode}/questions`);
+            const snapshot = await get(gameRef);
+            const totalQuestions = snapshot.val().length;
+            document.getElementById('progress').textContent = `${Object.keys(playerAnswers).length} / ${totalQuestions} answered`;
+        }
+
+        function showResults(players) {
+            document.querySelector('.game-section').classList.remove('active');
+            document.querySelector('.results-section').classList.add('active');
+
+            // Sort players by score
+            const sortedPlayers = Object.values(players).sort((a, b) => b.score - a.score);
+
+            // Show user's score
+            const userPlayer = players[currentPlayerName];
+            document.getElementById('yourScore').textContent = userPlayer ? userPlayer.score : 0;
+
+            // Show leaderboard
+            const leaderboard = document.getElementById('leaderboard');
+            leaderboard.innerHTML = '';
+
+            sortedPlayers.forEach((player, index) => {
+                const item = document.createElement('div');
+                item.className = 'leaderboard-item';
+
+                if (index === 0) item.classList.add('first');
+                else if (index === 1) item.classList.add('second');
+                else if (index === 2) item.classList.add('third');
+
+                const rankSymbol = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
+
+                item.innerHTML = `
+                    <div class="player-rank">${rankSymbol}</div>
+                    <div class="player-info">
+                        <div class="player-name">${player.name}</div>
+                    </div>
+                    <div class="player-score">${player.score}</div>
+                `;
+
+                leaderboard.appendChild(item);
+            });
+        }
+    </script>
+</body>
+</html>
