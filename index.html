@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>Who Knows Karan & Su Best? 🎀</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --pink: #e8387a;
+    --purple: #7c3aed;
+    --soft: #f9f0ff;
+    --card: rgba(255,255,255,0.96);
+    --text: #2d1243;
+    --muted: #9ca3af;
+    --border: #ede0ff;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: linear-gradient(145deg, #fff0f6 0%, #fdf4ff 45%, #f0f4ff 100%);
+    min-height: 100vh;
+    color: var(--text);
+  }
+
+  .page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 16px;
+  }
+
+  .card {
+    background: var(--card);
+    border-radius: 28px;
+    padding: 36px 28px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 16px 60px rgba(124,58,237,0.12);
+    border: 1.5px solid var(--border);
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    color: var(--purple);
+    text-align: center;
+    margin-bottom: 6px;
+  }
+
+  .card-sub {
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+
+  .emoji-big { font-size: 60px; text-align: center; margin-bottom: 10px; }
+
+  input[type=text], input[type=password] {
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 50px;
+    border: 2px solid var(--border);
+    font-size: 16px;
+    text-align: center;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    background: #fdf8ff;
+    outline: none;
+    transition: border-color .2s;
+  }
+  input:focus { border-color: var(--purple); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 13px 24px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    transition: opacity .15s, transform .1s;
+    width: 100%;
+    margin-top: 10px;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--pink), var(--purple));
+    color: #fff;
+    box-shadow: 0 6px 20px rgba(232,56,122,0.3);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--purple);
+    border: 2px solid var(--border);
+  }
+  .btn-sm { padding: 8px 16px; font-size: 13px; margin-top: 0; width: auto; }
+
+  .err { color: #ef4444; font-size: 13px; text-align: center; margin-top: 8px; }
+  .hint { color: var(--muted); font-size: 12px; text-align: center; margin-top: 10px; }
+
+  /* ── WELCOME ── */
+  .welcome-wrap { text-align: center; max-width: 420px; width: 100%; }
+  .hero-title { font-family: 'Playfair Display', serif; font-size: 34px; color: var(--pink); font-style: italic; line-height: 1.1; }
+  .hero-names { font-family: 'Playfair Display', serif; font-size: 48px; font-weight: 900; color: var(--purple); margin: 4px 0; }
+  .tagline { color: var(--muted); margin: 12px 0 32px; font-size: 14px; }
+  .role-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .role-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+    padding: 22px 20px; border-radius: 22px; border: none; cursor: pointer;
+    min-width: 148px; transition: transform .15s, box-shadow .15s; font-family: 'DM Sans', sans-serif;
+  }
+  .role-btn:active { transform: scale(0.96); }
+  .role-host { background: linear-gradient(135deg,#7c3aed,#4f46e5); color:#fff; box-shadow:0 8px 28px #7c3aed44; }
+  .role-guest { background: linear-gradient(135deg,#e8387a,#ec4899); color:#fff; box-shadow:0 8px 28px #e8387a44; }
+  .role-icon { font-size: 34px; }
+  .role-label { font-size: 16px; font-weight: 800; }
+  .role-desc { font-size: 12px; opacity: .8; }
+
+  /* ── SETUP ── */
+  .setup-scroll { max-height: 58vh; overflow-y: auto; margin-bottom: 16px; }
+  .setup-q { margin-bottom: 20px; padding-bottom: 18px; border-bottom: 1px solid #f3e8ff; }
+  .setup-q-text { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .setup-opts { display: flex; flex-direction: column; gap: 6px; }
+  .setup-opt {
+    padding: 9px 14px; border-radius: 10px; border: 2px solid var(--border);
+    background: #faf5ff; color: #5b21b6; cursor: pointer; text-align: left;
+    font-size: 13px; font-family: 'DM Sans', sans-serif; transition: all .15s;
+  }
+  .setup-opt.on { background: var(--purple); color: #fff; border-color: var(--purple); }
+  .progress-pill {
+    display: inline-block; background: var(--soft); color: var(--purple);
+    border-radius: 50px; padding: 4px 14px; font-size: 12px; font-weight: 700;
+    text-align: center; margin-bottom: 16px; width: 100%;
+  }
+
+  /* ── DASHBOARD ── */
+  .dash-wrap { width: 100%; max-width: 520px; }
+  .dash-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+  .dash-title { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--purple); }
+  .dash-sub { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .dash-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .stat-row { display: flex; gap: 10px; margin-bottom: 20px; }
+  .stat-box { flex: 1; background: var(--card); border-radius: 16px; padding: 14px 8px; text-align: center; box-shadow: 0 2px 12px rgba(124,58,237,0.08); }
+  .stat-num { display: block; font-size: 28px; font-weight: 900; color: var(--purple); }
+  .stat-lbl { font-size: 11px; color: var(--muted); }
+  .section-head { font-family: 'Playfair Display', serif; color: var(--purple); font-size: 16px; margin: 20px 0 10px; }
+  .lb-row { display: flex; align-items: center; gap: 12px; background: var(--card); border-radius: 14px; padding: 12px 16px; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(124,58,237,0.07); border-left: 5px solid #ccc; }
+  .lb-rank { font-size: 20px; min-width: 28px; }
+  .lb-name { flex: 1; font-weight: 700; color: var(--text); font-size: 15px; }
+  .lb-score { font-weight: 900; color: var(--purple); font-size: 18px; }
+  .lb-progress { color: var(--muted); font-size: 12px; }
+  .empty-state { text-align: center; padding: 32px 0; color: var(--muted); }
+  .break-row { background: var(--card); border-radius: 14px; padding: 12px 16px; margin-bottom: 8px; }
+  .break-q { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .break-bar { height: 8px; background: #f3e8ff; border-radius: 10px; overflow: hidden; margin-bottom: 4px; }
+  .break-fill { height: 100%; background: linear-gradient(90deg, var(--pink), var(--purple)); border-radius: 10px; transition: width .5s; }
+  .break-pct { color: var(--muted); font-size: 12px; }
+  .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981; margin-right: 5px; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.4;} }
+
+  /* ── QUIZ ── */
+  .quiz-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .player-tag { color: #fff; padding: 5px 14px; border-radius: 50px; font-size: 13px; font-weight: 700; }
+  .q-count { color: var(--muted); font-size: 13px; font-weight: 700; }
+  .prog-bar { height: 6px; background: #f3e8ff; border-radius: 10px; margin-bottom: 24px; overflow: hidden; }
+  .prog-fill { height: 100%; border-radius: 10px; transition: width .4s ease; }
+  .q-text { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--text); line-height: 1.4; margin-bottom: 22px; text-align: center; }
+  .opts { display: flex; flex-direction: column; gap: 10px; }
+  .opt-btn {
+    padding: 14px 18px; border-radius: 14px; border: 2px solid var(--border);
+    background: #faf5ff; color: #4c1d95; cursor: pointer; text-align: left;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600;
+    transition: all .2s;
+  }
+  .opt-btn.chosen { font-weight: 800; }
+  .opt-btn.dimmed { opacity: .35; }
+  .next-btn-wrap { margin-top: 18px; }
+
+  /* ── RESULT ── */
+  .score-big { font-family: 'Playfair Display', serif; font-size: 80px; font-weight: 900; color: var(--purple); text-align: center; line-height: 1; margin: 8px 0; }
+  .score-denom { font-size: 28px; color: var(--muted); }
+  .result-msg { text-align: center; color: var(--pink); font-size: 17px; font-weight: 700; margin: 12px 0 8px; }
+  .result-sub { text-align: center; color: var(--muted); font-size: 13px; line-height: 1.6; }
+
+  /* ── LOADING ── */
+  .spinner { width: 40px; height: 40px; border: 4px solid #f3e8ff; border-top-color: var(--purple); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 16px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── LEADERBOARD REVEAL (host) ── */
+  .reveal-card { background: linear-gradient(135deg,#fdf4ff,#fff0f6); border-radius: 28px; padding: 32px 24px; width:100%; max-width:440px; box-shadow:0 16px 60px rgba(232,56,122,0.15); border:1.5px solid #fce7f3; text-align:center; }
+  .reveal-title { font-family:'Playfair Display',serif; font-size:28px; color:var(--pink); margin-bottom:4px; }
+  .reveal-sub { color:var(--muted); font-size:14px; margin-bottom:24px; }
+</style>
+
+</head>
+<body>
+
+<!-- Firebase SDKs -->
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, get, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+// ── CONFIG ───────────────────────────────────────────────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyB47Qw26hMQcKr2sC4B8i772wrhTMKo8Ho",
+  authDomain: "su-baby-sprinkle.firebaseapp.com",
+  databaseURL: "https://su-baby-sprinkle-default-rtdb.firebaseio.com",
+  projectId: "su-baby-sprinkle",
+  storageBucket: "su-baby-sprinkle.firebasestorage.app",
+  messagingSenderId: "442824239099",
+  appId: "1:442824239099:web:b90411c9d63d96cdb8cd5e"
+};
+
+const HOST_PIN = "1234"; // Change this to something secret!
+
+const QUESTIONS = [
+  { id:0, q:"How did Karan and Su first meet?",        opts:["Through mutual friends","At work","On a dating app","At a party"] },
+  { id:1, q:"Who said 'I love you' first?",            opts:["Karan did","Su did","They said it together","It was in a note"] },
+  { id:2, q:"What is Karan's love language?",          opts:["Words of affirmation","Acts of service","Gift giving","Quality time"] },
+  { id:3, q:"What is Su's favorite weekend activity?", opts:["Brunching with friends","Netflix & chill","Outdoor adventures","Shopping"] },
+  { id:4, q:"Who is the better cook?",                 opts:["Karan","Su","Both equally great","Neither — they order out!"] },
+  { id:5, q:"What was their first trip together?",     opts:["Beach getaway","City break","Countryside escape","International adventure"] },
+  { id:6, q:"Who made the first move?",                opts:["Karan","Su","It was mutual","It's complicated!"] },
+  { id:7, q:"What is their go-to date night?",         opts:["Fancy restaurant","Movie night in","Trying new cuisines","Live music or shows"] },
+];
+
+const COLORS = ["#FF6B9D","#7C3AED","#0EA5E9","#F59E0B","#10B981","#F97316","#EC4899","#6366F1","#14B8A6","#EF4444"];
+
+// ── FIREBASE INIT ─────────────────────────────────────────────────────────────
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const gameRef = ref(db, "game");
+const answersRef = ref(db, "game/answers");
+const playersRef = ref(db, "game/players");
+const lockedRef = ref(db, "game/locked");
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let screen = "welcome";
+let localPlayer = null; // { name, color, qIndex, responses }
+let gameState = {};     // mirrors Firebase
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function render() {
+  const root = document.getElementById("root");
+  root.innerHTML = "";
+  const screens = {
+    welcome:      renderWelcome,
+    hostPin:      renderHostPin,
+    hostSetup:    renderHostSetup,
+    hostDash:     renderHostDash,
+    playerJoin:   renderPlayerJoin,
+    playerQuiz:   renderPlayerQuiz,
+    playerResult: renderPlayerResult,
+    loading:      renderLoading,
+  };
+  (screens[screen] || renderWelcome)();
+}
+
+// ── WELCOME ───────────────────────────────────────────────────────────────────
+function renderWelcome() {
+  document.getElementById("root").innerHTML = `
+    <div class="page">
+      <div class="welcome-wrap">
+        <div style="font-size:64px;margin-bottom:8px;">🎀</div>
+        <h1 class="hero-title">Who Knows</h1>
+        <h2 class="hero-names">Karan & Su</h2>
+        <h1 class="hero-title">the Best?</h1>
+        <p class="tagline">A baby shower quiz · real-time multiplayer</p>
+        <div class="role-row">
+          <button class="role-btn role-host" onclick="goHostPin()">
+            <span class="role-icon">🎛️</span>
+            <span class="role-label">I'm the Host</span>
+            <span class="role-desc">Set answers & see all results</span>
+          </button>
+          <button class="role-btn role-guest" onclick="goPlayerJoin()">
+            <span class="role-icon">🎮</span>
+            <span class="role-label">I'm a Guest</span>
+            <span class="role-desc">Play the quiz!</span>
+          </button>
+        </div>
+      </div>
+    </div>`;
+}
+
+window.goHostPin = () => { screen = "hostPin"; render(); };
+window.goPlayerJoin = () => { screen = "playerJoin"; render(); };
+
+// ── HOST PIN ──────────────────────────────────────────────────────────────────
+function renderHostPin() {
+  document.getElementById("root").innerHTML = `
+    <div class="page">
+      <div class="card">
+        <div class="emoji-big">🔐</div>
+        <h2 class="card-title">Host Login</h2>
+        <p class="card-sub">Enter your host PIN to continue</p>
+        <input type="password" id="pinInput" placeholder="PIN..." onkeydown="if(event.key==='Enter')checkPin()" />
+        <div class="err" id="pinErr"></div>
+        <button class="btn btn-primary" onclick="checkPin()">Enter →</button>
+        <p class="hint">Default PIN: 1234 (change in code)</p>
+        <button class="btn btn-ghost" style="margin-top:8px;" onclick="goWelcome()">← Back</button>
+      </div>
+    </div>`;
+  document.getElementById("pinInput").focus();
+}
+
+window.checkPin = () => {
+  const val = document.getElementById("pinInput").value;
+  if (val === HOST_PIN) {
+    get(lockedRef).then(snap => {
+      screen = snap.val() ? "hostDash" : "hostSetup";
+      render();
+    });
+  } else {
+    document.getElementById("pinErr").textContent = "Wrong PIN, try again!";
+  }
+};
+
+window.goWelcome = () => { screen = "welcome"; render(); };
+
+// ── HOST SETUP ────────────────────────────────────────────────────────────────
+let setupAnswers = Array(QUESTIONS.length).fill(null);
+
+function renderHostSetup() {
+  const set = setupAnswers.filter(Boolean).length;
+  const allSet = set === QUESTIONS.length;
+
+  document.getElementById("root").innerHTML = `
+    <div class="page">
+      <div class="card">
+        <h2 class="card-title">🎛️ Answer Key Setup</h2>
+        <p class="card-sub">Pick the correct answer for each question — only you'll see these!</p>
+        <div class="progress-pill">${set} / ${QUESTIONS.length} answers set</div>
+        <div class="setup-scroll" id="setupScroll">
+          ${QUESTIONS.map((q,i) => `
+            <div class="setup-q">
+              <p class="setup-q-text">${i+1}. ${q.q}</p>
+              <div class="setup-opts">
+                ${q.opts.map(opt => `
+                  <button class="setup-opt ${setupAnswers[i]===opt?'on':''}"
+                    onclick="setAnswer(${i},'${opt.replace(/'/g,"\\'")}')">
+                    ${setupAnswers[i]===opt?'✓ ':''}${opt}
+                  </button>`).join("")}
+              </div>
+            </div>`).join("")}
+        </div>
+        <button class="btn btn-primary" onclick="lockAnswers()" ${allSet?'':'disabled'}>
+          ${allSet ? '🚀 Lock Answers & Go Live' : `Set all ${QUESTIONS.length} answers first`}
+        </button>
+        <button class="btn btn-ghost" style="margin-top:8px;" onclick="resetAll()">🗑️ Reset All Game Data</button>
+      </div>
+    </div>`;
+}
+
+window.setAnswer = (i, opt) => {
+  setupAnswers[i] = opt;
+  renderHostSetup();
+};
+
+window.lockAnswers = async () => {
+  await set(answersRef, setupAnswers);
+  await set(lockedRef, true);
+  screen = "hostDash";
+  render();
+};
+
+window.resetAll = async () => {
+  if (!confirm("Reset ALL game data? This clears players and answers.")) return;
+  await remove(gameRef);
+  setupAnswers = Array(QUESTIONS.length).fill(null);
+  screen = "hostSetup";
+  render();
+};
+
+// ── HOST DASHBOARD ────────────────────────────────────────────────────────────
+let dashUnsub = null;
+
+function renderHostDash() {
+  if (dashUnsub) dashUnsub();
+
+  document.getElementById("root").innerHTML = `
+    <div class="page" style="align-items:flex-start;padding-top:24px;">
+      <div class="dash-wrap">
+        <div class="dash-header">
+          <div>
+            <div class="dash-title">🎛️ Host Dashboard</div>
+            <div class="dash-sub"><span class="live-dot"></span>Live · auto-updates</div>
+          </div>
+          <div class="dash-actions">
+            <button class="btn btn-ghost btn-sm" onclick="goHostSetup()">Edit Answers</button>
+            <button class="btn btn-primary btn-sm" onclick="resetPlayers()">Reset Players</button>
+          </div>
+        </div>
+        <div id="dashContent"><div class="spinner" style="margin-top:40px;"></div></div>
+      </div>
+    </div>`;
+
+  dashUnsub = onValue(gameRef, snap => {
+    const data = snap.val() || {};
+    const answers = data.answers || [];
+    const players = Object.values(data.players || {});
+    const done = players.filter(p => p.done).sort((a,b) => b.score - a.score);
+    const playing = players.filter(p => !p.done);
+
+    let html = `
+      <div class="stat-row">
+        <div class="stat-box"><span class="stat-num">${players.length}</span><span class="stat-lbl">Total Players</span></div>
+        <div class="stat-box"><span class="stat-num">${playing.length}</span><span class="stat-lbl">Playing</span></div>
+        <div class="stat-box"><span class="stat-num">${done.length}</span><span class="stat-lbl">Finished</span></div>
+      </div>`;
+
+    if (done.length > 0) {
+      html += `<div class="section-head">🏆 Leaderboard</div>`;
+      done.forEach((p,i) => {
+        const medal = i===0?"🥇":i===1?"🥈":i===2?"🥉":`#${i+1}`;
+        html += `<div class="lb-row" style="border-left-color:${p.color}">
+          <span class="lb-rank">${medal}</span>
+          <span class="lb-name">${p.name}</span>
+          <span class="lb-score">${p.score}/${QUESTIONS.length}</span>
+        </div>`;
+      });
+    }
+
+    if (playing.length > 0) {
+      html += `<div class="section-head">⏳ Still Playing</div>`;
+      playing.forEach(p => {
+        const qDone = (p.responses || []).length;
+        html += `<div class="lb-row" style="border-left-color:${p.color};opacity:.75">
+          <span class="lb-rank">🎮</span>
+          <span class="lb-name">${p.name}</span>
+          <span class="lb-progress">Q${qDone+1}/${QUESTIONS.length}</span>
+        </div>`;
+      });
+    }
+
+    if (players.length === 0) {
+      html += `<div class="empty-state">
+        <div style="font-size:40px;">👀</div>
+        <p>Waiting for guests to join…</p>
+        <p style="font-size:13px;margin-top:6px;">Ask them to open this page and tap <b>"I'm a Guest"</b></p>
+      </div>`;
+    }
+
+    if (done.length > 0 && answers.length > 0) {
+      html += `<div class="section-head">📊 Question Breakdown</div>`;
+      QUESTIONS.forEach((q,i) => {
+        const correct = done.filter(p => (p.responses||[])[i] === answers[i]).length;
+        const pct = done.length > 0 ? Math.round((correct/done.length)*100) : 0;
+        html += `<div class="break-row">
+          <p class="break-q">${i+1}. ${q.q}</p>
+          <p style="font-size:12px;color:#9ca3af;margin-bottom:6px;">Correct answer: <b style="color:#7c3aed">${answers[i]||'—'}</b></p>
+          <div class="break-bar"><div class="break-fill" style="width:${pct}%"></div></div>
+          <p class="break-pct">${correct}/${done.length} got it right (${pct}%)</p>
+        </div>`;
+      });
+    }
+
+    document.getElementById("dashContent").innerHTML = html;
+  });
+}
+
+window.goHostSetup = () => {
+  if (dashUnsub) { dashUnsub(); dashUnsub = null; }
+  screen = "hostSetup";
+  render();
+};
+
+window.resetPlayers = async () => {
+  if (!confirm("Remove all players? Answers stay intact.")) return;
+  await remove(ref(db, "game/players"));
+};
+
+// ── PLAYER JOIN ───────────────────────────────────────────────────────────────
+function renderPlayerJoin() {
+  document.getElementById("root").innerHTML = `
+    <div class="page">
+      <div class="card">
+        <div class="emoji-big">👋</div>
+        <h2 class="card-title">Join the Quiz!</h2>
+        <p class="card-sub">Enter your name to start — make sure the host has set up the answers first!</p>
+        <input type="text" id="nameInput" placeholder="Your name…" maxlength="20"
+          onkeydown="if(event.key==='Enter')joinGame()" />
+        <div class="err" id="joinErr"></div>
+        <button class="btn btn-primary" onclick="joinGame()">Let's go! 🎉</button>
+        <button class="btn btn-ghost" style="margin-top:8px;" onclick="goWelcome()">← Back</button>
+      </div>
+    </div>`;
+  document.getElementById("nameInput").focus();
+}
+
+window.joinGame = async () => {
+  const name = document.getElementById("nameInput").value.trim();
+  if (!name) return;
+
+  const [lockedSnap, playersSnap] = await Promise.all([get(lockedRef), get(playersRef)]);
+
+  if (!lockedSnap.val()) {
+    document.getElementById("joinErr").textContent = "The host hasn't started the game yet. Ask them to lock in the answers!";
+    return;
+  }
+
+  const existing = playersSnap.val() || {};
+  const nameTaken = Object.values(existing).some(p => p.name.toLowerCase() === name.toLowerCase());
+  if (nameTaken) {
+    document.getElementById("joinErr").textContent = "That name is taken! Try another.";
+    return;
+  }
+
+  const color = COLORS[Object.keys(existing).length % COLORS.length];
+  const playerKey = name.toLowerCase().replace(/\s+/g, "_") + "_" + Date.now();
+  const player = { name, color, responses: [], score: 0, done: false, key: playerKey };
+
+  await set(ref(db, `game/players/${playerKey}`), player);
+  localPlayer = { ...player, qIndex: 0 };
+  screen = "playerQuiz";
+  render();
+};
+
+// ── PLAYER QUIZ ───────────────────────────────────────────────────────────────
+let chosen = null;
+
+function renderPlayerQuiz() {
+  const { qIndex, name, color } = localPlayer;
+  const q = QUESTIONS[qIndex];
+  const progress = (qIndex / QUESTIONS.length) * 100;
+
+  document.getElementById("root").innerHTML = `
+    <div class="page">
+      <div class="card">
+        <div class="quiz-top">
+          <span class="player-tag" style="background:${color}">${name}</span>
+          <span class="q-count">${qIndex+1} / ${QUESTIONS.length}</span>
+        </div>
+        <div class="prog-bar"><div class="prog-fill" style="width:${progress}%;background:${color}"></div></div>
+        <p class="q-text">${q.q}</p>
+        <div class="opts">
+          ${q.opts.map(opt => `
+            <button class="opt-btn ${chosen===opt?'chosen':''} ${chosen!==null&&chosen!==opt?'dimmed':''}"
+              style="${chosen===opt?`border-color:${color};background:${color}22`:''}
+              onclick="pickAnswer('${opt.replace(/'/g,"\\'")}')">
+              ${opt}
+            </button>`).join("")}
+        </div>
+        <div id="nextWrap" class="next-btn-wrap" style="display:${chosen!==null?'block':'none'}">
+          <button class="btn btn-primary" onclick="nextQuestion()">
+            ${qIndex + 1 < QUESTIONS.length ? 'Next →' : 'See my result 🎉'}
+          </button>
+        </div>
+      </div>
+    </div>`;
+}
+
+window.pickAnswer = (opt) => {
+  if (chosen !== null) return;
+  chosen = opt;
+  localPlayer.responses.push(opt);
+  // Save progress to Firebase (no score yet — host calculates)
+  update(ref(db, `game/players/${localPlayer.key}`), { responses: localPlayer.responses });
+  renderPlayerQuiz();
+};
+
+window.nextQuestion = async () => {
+  chosen = null;
+  if (localPlayer.qIndex + 1 < QUESTIONS.length) {
+    localPlayer.qIndex++;
+    renderPlayerQuiz();
+  } else {
+    // All done — fetch answers & compute score
+    const answersSnap = await get(answersRef);
+    const answers = answersSnap.val() || [];
+    const score = localPlayer.responses.filter((r,i) => r === answers[i]).length;
+    localPlayer.score = score;
+    await update(ref(db, `game/players/${localPlayer.key}`), { score, done: true });
+    screen = "playerResult";
+    render();
+  }
+};
+
+// ── PLAYER RESULT ─────────────────────────────────────────────────────────────
+function renderPlayerResult() {
+  const { score, name } = localPlayer;
+  const total = QUESTIONS.length;
+  const pct = Math.round((score/total)*100);
+  const emoji = pct>=80?"🏆":pct>=60?"🌸":pct>=40?"😄":"🤣";
+  const msg = pct>=80?"You know them SO well! Top of the leaderboard material!":
+              pct>=60?"Pretty good! You're definitely a true friend.":
+              pct>=40?"Not bad! Maybe spend a bit more time with the happy couple 😄":
+              "Looks like you have some catching up to do! 😂";
+
+  document.getElementById("root").innerHTML = `
+    <div class="page">
+      <div class="card" style="text-align:center;">
+        <div style="font-size:64px;margin-bottom:8px;">${emoji}</div>
+        <h2 class="card-title">${name}!</h2>
+        <div class="score-big">${score}<span class="score-denom">/${total}</span></div>
+        <p class="result-msg">${msg}</p>
+        <p class="result-sub">The host will reveal the full leaderboard at the end 🎀<br>Thanks for playing!</p>
+      </div>
+    </div>`;
+}
+
+// ── LOADING ───────────────────────────────────────────────────────────────────
+function renderLoading() {
+  document.getElementById("root").innerHTML = `
+    <div class="page">
+      <div style="text-align:center;">
+        <div class="spinner"></div>
+        <p style="color:#9ca3af;">Loading…</p>
+      </div>
+    </div>`;
+}
+
+// ── BOOT ──────────────────────────────────────────────────────────────────────
+render();
+</script>
+
+<div id="root"></div>
+</body>
+</html>
