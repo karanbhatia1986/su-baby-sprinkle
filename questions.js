@@ -19,5 +19,11 @@ const triviaQuestions = [
         question: "What is my favorite food?",
         options: ["Pizza", "Sushi", "Tacos", "Burgers"],
         correctAnswer: null
+    },
+    {
+        id: 4,
+        question: "What is my hobby?",
+        options: ["Reading", "Gaming", "Sports", "Cooking"],
+        correctAnswer: null
     }
 ];
