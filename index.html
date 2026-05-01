@@ -547,48 +547,61 @@ function renderPlayerQuiz() {
         </div>
         <div class="prog-bar"><div class="prog-fill" style="width:${progress}%;background:${color}"></div></div>
         <p class="q-text">${q.q}</p>
-        <div class="opts">
-          ${q.opts.map(opt => `
-            <button class="opt-btn ${chosen===opt?'chosen':''} ${chosen!==null&&chosen!==opt?'dimmed':''}"
-              style="${chosen===opt?`border-color:${color};background:${color}22`:''}"
-              onclick="pickAnswer('${opt.replace(/'/g,"\\'")}')">
+        <div class="opts" id="optsContainer">
+          ${q.opts.map((opt, i) => `
+            <button class="opt-btn" data-index="${i}">
               ${opt}
             </button>`).join("")}
         </div>
-        <div id="nextWrap" class="next-btn-wrap" style="display:${chosen!==null?'block':'none'}">
-          <button class="btn btn-primary" onclick="nextQuestion()">
+        <div id="nextWrap" class="next-btn-wrap" style="display:none">
+          <button class="btn btn-primary" id="nextBtn">
             ${qIndex + 1 < QUESTIONS.length ? 'Next →' : 'See my result 🎉'}
           </button>
         </div>
       </div>
     </div>`;
+
+  // Attach listeners after DOM is rendered
+  document.querySelectorAll(".opt-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (chosen !== null) return;
+      const idx = parseInt(btn.dataset.index);
+      const opt = q.opts[idx];
+      chosen = opt;
+      localPlayer.responses.push(opt);
+      update(ref(db, `game/players/${localPlayer.key}`), { responses: localPlayer.responses });
+
+      // Style all buttons
+      document.querySelectorAll(".opt-btn").forEach((b, i) => {
+        if (q.opts[i] === opt) {
+          b.style.borderColor = color;
+          b.style.background = color + "22";
+          b.style.fontWeight = "800";
+        } else {
+          b.style.opacity = "0.35";
+        }
+      });
+
+      document.getElementById("nextWrap").style.display = "block";
+    });
+  });
+
+  document.getElementById("nextBtn").addEventListener("click", async () => {
+    chosen = null;
+    if (localPlayer.qIndex + 1 < QUESTIONS.length) {
+      localPlayer.qIndex++;
+      renderPlayerQuiz();
+    } else {
+      const answersSnap = await get(answersRef);
+      const answers = answersSnap.val() || [];
+      const score = localPlayer.responses.filter((r, i) => r === answers[i]).length;
+      localPlayer.score = score;
+      await update(ref(db, `game/players/${localPlayer.key}`), { score, done: true });
+      screen = "playerResult";
+      render();
+    }
+  });
 }
-
-window.pickAnswer = (opt) => {
-  if (chosen !== null) return;
-  chosen = opt;
-  localPlayer.responses.push(opt);
-  // Save progress to Firebase (no score yet — host calculates)
-  update(ref(db, `game/players/${localPlayer.key}`), { responses: localPlayer.responses });
-  renderPlayerQuiz();
-};
-
-window.nextQuestion = async () => {
-  chosen = null;
-  if (localPlayer.qIndex + 1 < QUESTIONS.length) {
-    localPlayer.qIndex++;
-    renderPlayerQuiz();
-  } else {
-    // All done — fetch answers & compute score
-    const answersSnap = await get(answersRef);
-    const answers = answersSnap.val() || [];
-    const score = localPlayer.responses.filter((r,i) => r === answers[i]).length;
-    localPlayer.score = score;
-    await update(ref(db, `game/players/${localPlayer.key}`), { score, done: true });
-    screen = "playerResult";
-    render();
-  }
-};
 
 // ── PLAYER RESULT ─────────────────────────────────────────────────────────────
 function renderPlayerResult() {
