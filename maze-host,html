@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baby Shower Maze - Host Control</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .section h2 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .game-code-display {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .game-code {
+            font-size: 3rem;
+            font-weight: bold;
+            color: white;
+            letter-spacing: 10px;
+            margin: 10px 0;
+        }
+
+        .game-code-label {
+            color: white;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .image-upload {
+            margin-top: 15px;
+        }
+
+        .image-upload input {
+            display: none;
+        }
+
+        .image-upload label {
+            display: block;
+            padding: 15px;
+            background: #667eea;
+            color: white;
+            text-align: center;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .image-upload label:hover {
+            background: #5568d3;
+        }
+
+        .image-preview {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .image-preview img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 10px;
+            border: 3px solid #667eea;
+        }
+
+        .leaderboard {
+            margin-top: 20px;
+        }
+
+        .leaderboard table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .leaderboard th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .leaderboard td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .leaderboard tr:hover {
+            background: #f0f0f0;
+        }
+
+        .rank-1 { background: #ffd700 !important; }
+        .rank-2 { background: #c0c0c0 !important; }
+        .rank-3 { background: #cd7f32 !important; }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .status-active {
+            background: #28a745;
+            color: white;
+        }
+
+        .status-inactive {
+            background: #dc3545;
+            color: white;
+        }
+
+        .info-box {
+            padding: 15px;
+            background: #e7f3ff;
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+
+        .qr-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #qrcode {
+            display: inline-block;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Host Control Panel</h1>
+
+        <div class="section">
+            <h2>Game Status</h2>
+            <div style="text-align: center;">
+                <span class="status status-inactive" id="gameStatus">No Active Game</span>
+            </div>
+            <div class="game-code-display" id="gameCodeDisplay" style="display: none;">
+                <div class="game-code-label">Game Code</div>
+                <div class="game-code" id="gameCodeText">------</div>
+                <div class="game-code-label" style="font-size: 0.9rem; margin-top: 10px;">
+                    Players enter this code to join
+                </div>
+            </div>
+            <button class="btn btn-primary" id="startGameBtn">Start New Game</button>
+            <button class="btn btn-danger" id="endGameBtn" style="display: none;">End Current Game</button>
+        </div>
+
+        <div class="section">
+            <h2>Goal Image Setup</h2>
+            <p>Upload a custom image for the maze goal (parents photo recommended)</p>
+            <div class="image-upload">
+                <input type="file" id="goalImageInput" accept="image/*">
+                <label for="goalImageInput">Choose Image</label>
+            </div>
+            <div class="image-preview" id="imagePreview" style="display: none;">
+                <p>Current Goal Image:</p>
+                <img id="previewImg" src="" alt="Goal image">
+            </div>
+            <div class="info-box">
+                <strong>Tip:</strong> Upload the image before starting the game. All players will see this image as their goal!
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Game Settings</h2>
+            <label style="display: block; margin-bottom: 10px;">
+                <strong>Difficulty Level:</strong>
+            </label>
+            <select id="difficultySelect" style="width: 100%; padding: 10px; border-radius: 5px; font-size: 1rem;">
+                <option value="25">Medium (25x25)</option>
+                <option value="31" selected>Hard (31x31)</option>
+                <option value="37">Very Hard (37x37)</option>
+                <option value="43">Expert (43x43)</option>
+            </select>
+        </div>
+
+        <div class="section">
+            <h2>Live Leaderboard</h2>
+            <button class="btn btn-success" id="refreshLeaderboard">Refresh Leaderboard</button>
+            <div class="leaderboard">
+                <table id="leaderboardTable">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Player Name</th>
+                            <th>Time</th>
+                            <th>Moves</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 20px; color: #999;">
+                                No results yet. Start a game and wait for players to complete!
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>QR Code for Players</h2>
+            <p style="margin-bottom: 10px;">Players can scan this to access the game:</p>
+            <div class="qr-container">
+                <div id="qrcode"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, updateDoc, doc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+        import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyB47Qw26hMQcKr2sC4B8i772wrhTMKo8Ho",
+            authDomain: "su-baby-sprinkle.firebaseapp.com",
+            databaseURL: "https://su-baby-sprinkle-default-rtdb.firebaseio.com",
+            projectId: "su-baby-sprinkle",
+            storageBucket: "su-baby-sprinkle.firebasestorage.app",
+            messagingSenderId: "442824239099",
+            appId: "1:442824239099:web:b90411c9d63d96cdb8cd5e",
+            measurementId: "G-TQLMQ9K64W"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        let currentGameCode = null;
+        let currentGameId = null;
+        let leaderboardListener = null;
+
+        function generateGameCode() {
+            return Math.random().toString(36).substring(2, 8).toUpperCase();
+        }
+
+        async function startNewGame() {
+            try {
+                const difficulty = document.getElementById('difficultySelect').value;
+                currentGameCode = generateGameCode();
+
+                const gameData = {
+                    code: currentGameCode,
+                    active: true,
+                    createdAt: new Date(),
+                    difficulty: parseInt(difficulty),
+                    goalImageUrl: localStorage.getItem('goalImageUrl') || null
+                };
+
+                const docRef = await addDoc(collection(db, 'games'), gameData);
+                currentGameId = docRef.id;
+
+                document.getElementById('gameCodeText').textContent = currentGameCode;
+                document.getElementById('gameCodeDisplay').style.display = 'block';
+                document.getElementById('gameStatus').textContent = 'Active Game';
+                document.getElementById('gameStatus').className = 'status status-active';
+                document.getElementById('startGameBtn').style.display = 'none';
+                document.getElementById('endGameBtn').style.display = 'block';
+
+                alert(`Game started! Code: ${currentGameCode}`);
+                startLeaderboardListener();
+            } catch (error) {
+                console.error('Error starting game:', error);
+                alert('Error starting game. Check console and Firebase configuration.');
+            }
+        }
+
+        async function endGame() {
+            if (!currentGameId) return;
+
+            try {
+                await updateDoc(doc(db, 'games', currentGameId), {
+                    active: false,
+                    endedAt: new Date()
+                });
+
+                document.getElementById('gameCodeDisplay').style.display = 'none';
+                document.getElementById('gameStatus').textContent = 'No Active Game';
+                document.getElementById('gameStatus').className = 'status status-inactive';
+                document.getElementById('startGameBtn').style.display = 'block';
+                document.getElementById('endGameBtn').style.display = 'none';
+
+                if (leaderboardListener) {
+                    leaderboardListener();
+                    leaderboardListener = null;
+                }
+
+                alert('Game ended!');
+            } catch (error) {
+                console.error('Error ending game:', error);
+                alert('Error ending game. Check console.');
+            }
+        }
+
+        async function uploadGoalImage(file) {
+            try {
+                const storageRef = ref(storage, `goal-images/${Date.now()}_${file.name}`);
+                await uploadBytes(storageRef, file);
+                const downloadURL = await getDownloadURL(storageRef);
+
+                localStorage.setItem('goalImageUrl', downloadURL);
+
+                document.getElementById('previewImg').src = downloadURL;
+                document.getElementById('imagePreview').style.display = 'block';
+
+                alert('Image uploaded successfully!');
+                return downloadURL;
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                alert('Error uploading image. Check console and Firebase configuration.');
+            }
+        }
+
+        function startLeaderboardListener() {
+            if (!currentGameCode) return;
+
+            const q = query(
+                collection(db, 'results'),
+                where('gameCode', '==', currentGameCode),
+                orderBy('score', 'desc')
+            );
+
+            leaderboardListener = onSnapshot(q, (snapshot) => {
+                const results = [];
+                snapshot.forEach((doc) => {
+                    results.push({ id: doc.id, ...doc.data() });
+                });
+                updateLeaderboardDisplay(results);
+            });
+        }
+
+        function updateLeaderboardDisplay(results) {
+            const tbody = document.getElementById('leaderboardBody');
+
+            if (results.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 20px; color: #999;">
+                            No results yet. Waiting for players to complete the maze...
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = results.map((result, index) => {
+                const rank = index + 1;
+                const rowClass = rank <= 3 ? `rank-${rank}` : '';
+                return `
+                    <tr class="${rowClass}">
+                        <td><strong>${rank}</strong></td>
+                        <td>${result.playerName}</td>
+                        <td>${result.time}s</td>
+                        <td>${result.moves}</td>
+                        <td><strong>${result.score}</strong></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function loadLeaderboard() {
+            if (!currentGameCode) {
+                alert('No active game to load leaderboard for.');
+                return;
+            }
+
+            try {
+                const q = query(
+                    collection(db, 'results'),
+                    where('gameCode', '==', currentGameCode),
+                    orderBy('score', 'desc')
+                );
+
+                const querySnapshot = await getDocs(q);
+                const results = [];
+                querySnapshot.forEach((doc) => {
+                    results.push({ id: doc.id, ...doc.data() });
+                });
+
+                updateLeaderboardDisplay(results);
+            } catch (error) {
+                console.error('Error loading leaderboard:', error);
+            }
+        }
+
+        // Event listeners
+        document.getElementById('startGameBtn').addEventListener('click', startNewGame);
+        document.getElementById('endGameBtn').addEventListener('click', endGame);
+        document.getElementById('refreshLeaderboard').addEventListener('click', loadLeaderboard);
+
+        document.getElementById('goalImageInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                uploadGoalImage(file);
+            }
+        });
+
+        // Load saved image on page load
+        window.addEventListener('load', () => {
+            const savedImageUrl = localStorage.getItem('goalImageUrl');
+            if (savedImageUrl) {
+                document.getElementById('previewImg').src = savedImageUrl;
+                document.getElementById('imagePreview').style.display = 'block';
+            }
+
+            // Generate QR code
+            generateQRCode();
+        });
+
+        function generateQRCode() {
+            const playerUrl = window.location.href.replace('host.html', 'index.html');
+            const qrContainer = document.getElementById('qrcode');
+
+            // Using a simple QR code API
+            const qrImg = document.createElement('img');
+            qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(playerUrl)}`;
+            qrImg.alt = 'QR Code for game';
+            qrContainer.appendChild(qrImg);
+        }
+    </script>
+</body>
+</html>
