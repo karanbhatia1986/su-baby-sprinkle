@@ -25,7 +25,7 @@ const triviaQuestions = [
     },
     {
         id: 5,
-        question: "?",
+        question: "Who will make the baby laugh first?",
         options: ["Karan", "Su"],
         correctAnswer: null
     }
