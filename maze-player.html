@@ -299,7 +299,6 @@
         let gameData = null;
         let playerName = '';
         let gameCode = '';
-        let goalImageUrl = null;
         let goalImage = null;
 
         const canvas = document.getElementById('maze');
@@ -353,11 +352,9 @@
 
                 gameData = { id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data() };
                 mazeSize = gameData.difficulty || 31;
-                goalImageUrl = gameData.goalImageUrl;
 
-                if (goalImageUrl) {
-                    await loadGoalImage();
-                }
+                // Load the static goal image
+                await loadGoalImage();
 
                 document.getElementById('entryScreen').style.display = 'none';
                 document.getElementById('gameScreen').style.display = 'block';
@@ -370,15 +367,19 @@
         }
 
         function loadGoalImage() {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 goalImage = new Image();
                 goalImage.onload = () => resolve();
                 goalImage.onerror = () => {
-                    console.error('Failed to load goal image');
-                    goalImage = null;
-                    resolve();
+                    console.warn('Failed to load goal-image.jpg, trying goal-image.png...');
+                    goalImage.src = 'goal-image.png';
+                    goalImage.onerror = () => {
+                        console.warn('No goal image found, will use emoji fallback');
+                        goalImage = null;
+                        resolve();
+                    };
                 };
-                goalImage.src = goalImageUrl;
+                goalImage.src = 'goal-image.jpg';
             });
         }
 
