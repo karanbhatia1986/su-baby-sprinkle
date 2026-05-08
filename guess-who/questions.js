@@ -79,7 +79,7 @@ const triviaQuestions = [
     },
     {
         id: 14,
-        question: "Who will ?",
+        question: "Who will teach the baby how to dance?",
         options: ["Karan", "Su"],
         correctAnswer: null
     }
