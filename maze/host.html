@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Su Baby Sprinkle Maze - Host Control</title>
+    <title>Baby Shower Maze - Host Control</title>
     <style>
         * {
             margin: 0;
@@ -321,9 +321,20 @@
         }
 
         async function startNewGame() {
+            console.log('Start New Game button clicked!');
+
+            // Check if Firebase is configured
+            if (firebaseConfig.apiKey === "YOUR_API_KEY") {
+                alert('⚠️ Firebase not configured!\n\nPlease update the Firebase configuration in host.html (around line 180).\n\nSee INSTRUCTIONS.txt for help.');
+                console.error('Firebase config still has placeholder values. Update the firebaseConfig object in this file.');
+                return;
+            }
+
             try {
+                console.log('Generating game code...');
                 const difficulty = document.getElementById('difficultySelect').value;
                 currentGameCode = generateGameCode();
+                console.log('Game code generated:', currentGameCode);
 
                 const gameData = {
                     code: currentGameCode,
@@ -332,8 +343,10 @@
                     difficulty: parseInt(difficulty)
                 };
 
+                console.log('Attempting to save to Firestore...', gameData);
                 const docRef = await addDoc(collection(db, 'games'), gameData);
                 currentGameId = docRef.id;
+                console.log('Game saved successfully! Document ID:', docRef.id);
 
                 document.getElementById('gameCodeText').textContent = currentGameCode;
                 document.getElementById('gameCodeDisplay').style.display = 'block';
@@ -342,11 +355,26 @@
                 document.getElementById('startGameBtn').style.display = 'none';
                 document.getElementById('endGameBtn').style.display = 'block';
 
-                alert(`Game started! Code: ${currentGameCode}`);
+                alert(`✅ Game started successfully!\n\nGame Code: ${currentGameCode}\n\nShare this code with your guests!`);
                 startLeaderboardListener();
             } catch (error) {
                 console.error('Error starting game:', error);
-                alert('Error starting game. Check console and Firebase configuration.');
+                console.error('Error details:', error.message);
+                console.error('Error code:', error.code);
+
+                let errorMessage = 'Error starting game:\n\n';
+
+                if (error.code === 'permission-denied') {
+                    errorMessage += '🔒 Permission Denied\n\nFirestore rules may be blocking writes.\nMake sure you:\n1. Enabled Firestore Database\n2. Set rules to test mode\n\nSee SETUP.md for details.';
+                } else if (error.message.includes('projectId')) {
+                    errorMessage += '⚠️ Invalid Firebase Configuration\n\nCheck that your projectId and other config values are correct.';
+                } else if (error.message.includes('network')) {
+                    errorMessage += '📡 Network Error\n\nCheck your internet connection.';
+                } else {
+                    errorMessage += error.message + '\n\nCheck browser console (F12) for details.';
+                }
+
+                alert(errorMessage);
             }
         }
 
@@ -455,8 +483,20 @@
         document.getElementById('endGameBtn').addEventListener('click', endGame);
         document.getElementById('refreshLeaderboard').addEventListener('click', loadLeaderboard);
 
-        // Generate QR code on page load
+        // Check Firebase config and generate QR code on page load
         window.addEventListener('load', () => {
+            console.log('Host panel loaded');
+            console.log('Firebase config check:', firebaseConfig.apiKey === "YOUR_API_KEY" ? '❌ NOT CONFIGURED' : '✅ Configured');
+
+            if (firebaseConfig.apiKey === "YOUR_API_KEY") {
+                const warningBanner = document.createElement('div');
+                warningBanner.style.cssText = 'background: #ff6b6b; color: white; padding: 15px; text-align: center; font-weight: bold; margin-bottom: 20px; border-radius: 10px;';
+                warningBanner.innerHTML = '⚠️ Firebase Not Configured! Update firebaseConfig in host.html before starting games. See INSTRUCTIONS.txt';
+                document.querySelector('.container').prepend(warningBanner);
+            } else {
+                console.log('Firebase appears to be configured. Ready to start games!');
+            }
+
             generateQRCode();
         });
 
