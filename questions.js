@@ -52,5 +52,11 @@ const triviaQuestions = [
         question: "Who was the more difficult teenager?",
         options: ["Karan", "Su"],
         correctAnswer: null
+    },
+    {
+        id: 10,
+        question: "Who is most likely to accidently teach the baby a curse word?",
+        options: ["Karan", "Su"],
+        correctAnswer: null
     }
 ];
