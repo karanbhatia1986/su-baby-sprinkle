@@ -49,7 +49,7 @@ const triviaQuestions = [
     },
     {
         id: 9,
-        question: "?",
+        question: "Who was the more difficult teenager?",
         options: ["Karan", "Su"],
         correctAnswer: null
     }
