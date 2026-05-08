@@ -40,5 +40,11 @@ const triviaQuestions = [
         question: "Who can sleep through loud noises and baby cry?",
         options: ["Karan", "Su"],
         correctAnswer: null
+    },
+    {
+        id: 8,
+        question: "Who will do the most baby talk?",
+        options: ["Karan", "Su"],
+        correctAnswer: null
     }
 ];
