@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Baby Shower Maze Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 10px;
+            touch-action: manipulation;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ff6b9d;
+            margin-bottom: 20px;
+            font-size: clamp(1.5rem, 5vw, 2rem);
+        }
+
+        .entry-screen {
+            text-align: center;
+        }
+
+        .entry-screen input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            border: 2px solid #ff6b9d;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .entry-screen button {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            background: #ff6b9d;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .entry-screen button:hover {
+            background: #ff4081;
+        }
+
+        .game-screen {
+            display: none;
+        }
+
+        .info-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #fff5f7;
+            border-radius: 10px;
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+        }
+
+        .timer, .moves {
+            font-weight: bold;
+            color: #ff6b9d;
+        }
+
+        #maze {
+            margin: 0 auto;
+            border: 3px solid #ff6b9d;
+            border-radius: 10px;
+            background: #ffffff;
+            touch-action: none;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .control-btn {
+            padding: 15px;
+            font-size: 1.5rem;
+            background: #ff6b9d;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            touch-action: manipulation;
+            user-select: none;
+        }
+
+        .control-btn:active {
+            transform: scale(0.95);
+            background: #ff4081;
+        }
+
+        .control-btn:nth-child(2) {
+            grid-column: 2;
+        }
+
+        .control-btn:nth-child(3) {
+            grid-column: 2;
+            grid-row: 2;
+        }
+
+        .control-btn:nth-child(4) {
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        .control-btn:nth-child(5) {
+            grid-column: 3;
+            grid-row: 2;
+        }
+
+        .instructions {
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 90%;
+            animation: bounceIn 0.5s;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal h2 {
+            color: #ff6b9d;
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .modal p {
+            font-size: 1.2rem;
+            margin: 10px 0;
+            color: #555;
+        }
+
+        .modal button {
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            background: #ff6b9d;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .player-name-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1rem;
+            border: 2px solid #ff6b9d;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .error-message {
+            color: #dc3545;
+            padding: 10px;
+            background: #ffe6e6;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .goal-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎉 Baby Shower Maze 🎉</h1>
+
+        <div class="entry-screen" id="entryScreen">
+            <p style="margin-bottom: 20px; color: #666;">Enter your name and game code to start playing!</p>
+            <input type="text" id="playerNameInput" placeholder="Your Name" maxlength="30">
+            <input type="text" id="gameCodeInput" placeholder="Game Code (e.g., ABC123)" maxlength="6">
+            <button id="joinGameBtn">Join Game</button>
+            <div class="error-message" id="errorMessage" style="display: none;"></div>
+        </div>
+
+        <div class="game-screen" id="gameScreen">
+            <div class="info-bar">
+                <div class="timer">⏱️ Time: <span id="time">0</span>s</div>
+                <div class="moves">👣 Moves: <span id="moves">0</span></div>
+            </div>
+
+            <canvas id="maze"></canvas>
+
+            <div class="controls">
+                <button class="control-btn" data-direction="up">⬆️</button>
+                <button class="control-btn" data-direction="down">⬇️</button>
+                <button class="control-btn" data-direction="left">⬅️</button>
+                <button class="control-btn" data-direction="right">➡️</button>
+            </div>
+
+            <div class="instructions">
+                Use arrow keys or touch buttons to guide the baby 👶 to the goal!
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="winModal">
+        <div class="modal-content">
+            <h2>🎊 Congratulations! 🎊</h2>
+            <p>The baby found the parents!</p>
+            <p>Time: <span id="finalTime"></span>s</p>
+            <p>Moves: <span id="finalMoves"></span></p>
+            <p>Score: <span id="finalScore"></span></p>
+            <p style="margin-top: 20px; color: #999;">Your result has been saved to the leaderboard!</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getFirestore, collection, addDoc, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyB47Qw26hMQcKr2sC4B8i772wrhTMKo8Ho",
+            authDomain: "su-baby-sprinkle.firebaseapp.com",
+            databaseURL: "https://su-baby-sprinkle-default-rtdb.firebaseio.com",
+            projectId: "su-baby-sprinkle",
+            storageBucket: "su-baby-sprinkle.firebasestorage.app",
+            messagingSenderId: "442824239099",
+            appId: "1:442824239099:web:b90411c9d63d96cdb8cd5e",
+            measurementId: "G-TQLMQ9K64W"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let gameData = null;
+        let playerName = '';
+        let gameCode = '';
+        let goalImageUrl = null;
+        let goalImage = null;
+
+        const canvas = document.getElementById('maze');
+        const ctx = canvas.getContext('2d');
+        let mazeSize = 31;
+        let cellSize;
+        let maze = [];
+        let playerPos = { x: 1, y: 1 };
+        let goalPos = { x: mazeSize - 2, y: mazeSize - 2 };
+        let moves = 0;
+        let time = 0;
+        let timerInterval;
+        let gameWon = false;
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        async function joinGame() {
+            playerName = document.getElementById('playerNameInput').value.trim();
+            gameCode = document.getElementById('gameCodeInput').value.trim().toUpperCase();
+
+            if (!playerName) {
+                showError('Please enter your name!');
+                return;
+            }
+
+            if (!gameCode) {
+                showError('Please enter the game code!');
+                return;
+            }
+
+            try {
+                const q = query(
+                    collection(db, 'games'),
+                    where('code', '==', gameCode),
+                    where('active', '==', true)
+                );
+
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    showError('Invalid or inactive game code. Please check with the host.');
+                    return;
+                }
+
+                gameData = { id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data() };
+                mazeSize = gameData.difficulty || 31;
+                goalImageUrl = gameData.goalImageUrl;
+
+                if (goalImageUrl) {
+                    await loadGoalImage();
+                }
+
+                document.getElementById('entryScreen').style.display = 'none';
+                document.getElementById('gameScreen').style.display = 'block';
+
+                startGame();
+            } catch (error) {
+                console.error('Error joining game:', error);
+                showError('Error connecting to game. Please try again.');
+            }
+        }
+
+        function loadGoalImage() {
+            return new Promise((resolve, reject) => {
+                goalImage = new Image();
+                goalImage.onload = () => resolve();
+                goalImage.onerror = () => {
+                    console.error('Failed to load goal image');
+                    goalImage = null;
+                    resolve();
+                };
+                goalImage.src = goalImageUrl;
+            });
+        }
+
+        function startGame() {
+            moves = 0;
+            time = 0;
+            gameWon = false;
+            document.getElementById('moves').textContent = moves;
+            document.getElementById('time').textContent = time;
+
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (!gameWon) {
+                    time++;
+                    document.getElementById('time').textContent = time;
+                }
+            }, 1000);
+
+            initCanvas();
+            generateMaze();
+            drawMaze();
+        }
+
+        function initCanvas() {
+            const container = canvas.parentElement;
+            const maxSize = Math.min(container.clientWidth - 40, 600);
+            cellSize = Math.floor(maxSize / mazeSize);
+            canvas.width = cellSize * mazeSize;
+            canvas.height = cellSize * mazeSize;
+        }
+
+        function generateMaze() {
+            maze = Array(mazeSize).fill().map(() => Array(mazeSize).fill(1));
+
+            const stack = [];
+            const start = { x: 1, y: 1 };
+            maze[start.y][start.x] = 0;
+            stack.push(start);
+
+            const directions = [
+                { dx: 0, dy: -2 },
+                { dx: 2, dy: 0 },
+                { dx: 0, dy: 2 },
+                { dx: -2, dy: 0 }
+            ];
+
+            while (stack.length > 0) {
+                const current = stack[stack.length - 1];
+                const neighbors = [];
+
+                for (const dir of directions) {
+                    const nx = current.x + dir.dx;
+                    const ny = current.y + dir.dy;
+
+                    if (nx > 0 && nx < mazeSize - 1 && ny > 0 && ny < mazeSize - 1 && maze[ny][nx] === 1) {
+                        neighbors.push({ x: nx, y: ny, dx: dir.dx, dy: dir.dy });
+                    }
+                }
+
+                if (neighbors.length > 0) {
+                    const next = neighbors[Math.floor(Math.random() * neighbors.length)];
+                    maze[next.y][next.x] = 0;
+                    maze[current.y + next.dy / 2][current.x + next.dx / 2] = 0;
+                    stack.push({ x: next.x, y: next.y });
+                } else {
+                    stack.pop();
+                }
+            }
+
+            playerPos = { x: 1, y: 1 };
+            goalPos = { x: mazeSize - 2, y: mazeSize - 2 };
+            maze[goalPos.y][goalPos.x] = 0;
+        }
+
+        function drawMaze() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let y = 0; y < mazeSize; y++) {
+                for (let x = 0; x < mazeSize; x++) {
+                    const posX = x * cellSize;
+                    const posY = y * cellSize;
+
+                    if (maze[y][x] === 1) {
+                        const gradient = ctx.createLinearGradient(posX, posY, posX + cellSize, posY + cellSize);
+                        gradient.addColorStop(0, '#c9d6ff');
+                        gradient.addColorStop(1, '#e2e2e2');
+                        ctx.fillStyle = gradient;
+                    } else {
+                        ctx.fillStyle = 'white';
+                    }
+
+                    ctx.fillRect(posX, posY, cellSize, cellSize);
+                    ctx.strokeStyle = '#ddd';
+                    ctx.strokeRect(posX, posY, cellSize, cellSize);
+                }
+            }
+
+            ctx.fillStyle = '#98fb98';
+            ctx.fillRect(goalPos.x * cellSize, goalPos.y * cellSize, cellSize, cellSize);
+
+            if (goalImage) {
+                const padding = cellSize * 0.1;
+                ctx.drawImage(
+                    goalImage,
+                    goalPos.x * cellSize + padding,
+                    goalPos.y * cellSize + padding,
+                    cellSize - padding * 2,
+                    cellSize - padding * 2
+                );
+            } else {
+                ctx.font = `${cellSize * 0.6}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('👨‍👩‍👶', (goalPos.x + 0.5) * cellSize, (goalPos.y + 0.5) * cellSize);
+            }
+
+            ctx.fillStyle = '#fffacd';
+            ctx.fillRect(playerPos.x * cellSize, playerPos.y * cellSize, cellSize, cellSize);
+            ctx.font = `${cellSize * 0.6}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('👶', (playerPos.x + 0.5) * cellSize, (playerPos.y + 0.5) * cellSize);
+        }
+
+        function movePlayer(dx, dy) {
+            if (gameWon) return;
+
+            const newX = playerPos.x + dx;
+            const newY = playerPos.y + dy;
+
+            if (newX >= 0 && newX < mazeSize && newY >= 0 && newY < mazeSize && maze[newY][newX] === 0) {
+                playerPos.x = newX;
+                playerPos.y = newY;
+                moves++;
+                document.getElementById('moves').textContent = moves;
+
+                if (playerPos.x === goalPos.x && playerPos.y === goalPos.y) {
+                    winGame();
+                }
+
+                drawMaze();
+            }
+        }
+
+        async function winGame() {
+            gameWon = true;
+            clearInterval(timerInterval);
+
+            const score = Math.max(1000 - (time * 2) - moves, 100);
+
+            document.getElementById('finalTime').textContent = time;
+            document.getElementById('finalMoves').textContent = moves;
+            document.getElementById('finalScore').textContent = score;
+
+            try {
+                await addDoc(collection(db, 'results'), {
+                    playerName: playerName,
+                    gameCode: gameCode,
+                    time: time,
+                    moves: moves,
+                    score: score,
+                    completedAt: new Date(),
+                    difficulty: mazeSize
+                });
+            } catch (error) {
+                console.error('Error saving result:', error);
+            }
+
+            document.getElementById('winModal').classList.add('show');
+        }
+
+        document.getElementById('joinGameBtn').addEventListener('click', joinGame);
+
+        document.addEventListener('keydown', (e) => {
+            const keyMap = {
+                'ArrowUp': { dx: 0, dy: -1 },
+                'ArrowDown': { dx: 0, dy: 1 },
+                'ArrowLeft': { dx: -1, dy: 0 },
+                'ArrowRight': { dx: 1, dy: 0 }
+            };
+
+            if (keyMap[e.key]) {
+                e.preventDefault();
+                movePlayer(keyMap[e.key].dx, keyMap[e.key].dy);
+            }
+        });
+
+        document.querySelectorAll('.control-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const dirMap = {
+                    'up': { dx: 0, dy: -1 },
+                    'down': { dx: 0, dy: 1 },
+                    'left': { dx: -1, dy: 0 },
+                    'right': { dx: 1, dy: 0 }
+                };
+                const dir = dirMap[btn.dataset.direction];
+                movePlayer(dir.dx, dir.dy);
+            });
+        });
+
+        window.addEventListener('resize', () => {
+            if (document.getElementById('gameScreen').style.display !== 'none') {
+                initCanvas();
+                drawMaze();
+            }
+        });
+
+        document.getElementById('gameCodeInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                joinGame();
+            }
+        });
+    </script>
+</body>
+</html>
