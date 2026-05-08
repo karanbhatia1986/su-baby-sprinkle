@@ -235,17 +235,13 @@
 
         <div class="section">
             <h2>Goal Image Setup</h2>
-            <p>Upload a custom image for the maze goal (parents photo recommended)</p>
-            <div class="image-upload">
-                <input type="file" id="goalImageInput" accept="image/*">
-                <label for="goalImageInput">Choose Image</label>
-            </div>
-            <div class="image-preview" id="imagePreview" style="display: none;">
+            <p>The game will use the image file <strong>goal-image.jpg</strong> (or .png) from your project folder.</p>
+            <div class="image-preview" id="imagePreview">
                 <p>Current Goal Image:</p>
-                <img id="previewImg" src="" alt="Goal image">
+                <img id="previewImg" src="goal-image.jpg" alt="Goal image" style="max-width: 200px; max-height: 200px; border-radius: 10px; border: 3px solid #667eea;">
             </div>
             <div class="info-box">
-                <strong>Tip:</strong> Upload the image before starting the game. All players will see this image as their goal!
+                <strong>To change the image:</strong> Replace the <code>goal-image.jpg</code> file in your project folder with your parents' photo (name it exactly "goal-image.jpg" or "goal-image.png").
             </div>
         </div>
 
@@ -299,7 +295,6 @@
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
         import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, updateDoc, doc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
-        import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js';
 
         // Firebase configuration
         const firebaseConfig = {
@@ -334,8 +329,7 @@
                     code: currentGameCode,
                     active: true,
                     createdAt: new Date(),
-                    difficulty: parseInt(difficulty),
-                    goalImageUrl: localStorage.getItem('goalImageUrl') || null
+                    difficulty: parseInt(difficulty)
                 };
 
                 const docRef = await addDoc(collection(db, 'games'), gameData);
@@ -383,24 +377,6 @@
             }
         }
 
-        async function uploadGoalImage(file) {
-            try {
-                const storageRef = ref(storage, `goal-images/${Date.now()}_${file.name}`);
-                await uploadBytes(storageRef, file);
-                const downloadURL = await getDownloadURL(storageRef);
-
-                localStorage.setItem('goalImageUrl', downloadURL);
-
-                document.getElementById('previewImg').src = downloadURL;
-                document.getElementById('imagePreview').style.display = 'block';
-
-                alert('Image uploaded successfully!');
-                return downloadURL;
-            } catch (error) {
-                console.error('Error uploading image:', error);
-                alert('Error uploading image. Check console and Firebase configuration.');
-            }
-        }
 
         function startLeaderboardListener() {
             if (!currentGameCode) return;
@@ -479,22 +455,8 @@
         document.getElementById('endGameBtn').addEventListener('click', endGame);
         document.getElementById('refreshLeaderboard').addEventListener('click', loadLeaderboard);
 
-        document.getElementById('goalImageInput').addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                uploadGoalImage(file);
-            }
-        });
-
-        // Load saved image on page load
+        // Generate QR code on page load
         window.addEventListener('load', () => {
-            const savedImageUrl = localStorage.getItem('goalImageUrl');
-            if (savedImageUrl) {
-                document.getElementById('previewImg').src = savedImageUrl;
-                document.getElementById('imagePreview').style.display = 'block';
-            }
-
-            // Generate QR code
             generateQRCode();
         });
 
