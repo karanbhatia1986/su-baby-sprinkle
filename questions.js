@@ -64,5 +64,11 @@ const triviaQuestions = [
         question: "Who is most likely to sneak baby's first sweet treat?",
         options: ["Karan", "Su"],
         correctAnswer: null
+    },
+    {
+        id: 11,
+        question: "Who is going to buy the most baby gadgets?",
+        options: ["Karan", "Su"],
+        correctAnswer: null
     }
 ];
