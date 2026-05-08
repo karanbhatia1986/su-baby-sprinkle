@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Baby Shower Maze 🍼</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --rose: #c4607e;
+    --rose-light: #f7dde6;
+    --rose-pale: #fdf1f5;
+    --sage: #7aab84;
+    --sage-light: #dff0e3;
+    --cream: #fdf8f2;
+    --text-dark: #3d2b35;
+    --text-mid: #8a6272;
+    --gold: #d4a843;
+  }
+
+  html { height: 100%; }
+  body {
+    background: var(--cream);
+    font-family: 'Lato', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100%;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(196,96,126,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(122,171,132,0.08) 0%, transparent 50%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .screen {
+    display: none; width: 100%; max-width: 440px;
+    flex-direction: column; align-items: center;
+    padding: 14px 16px 20px; gap: 10px;
+    position: relative; z-index: 1;
+  }
+  .screen.active { display: flex; }
+
+  /* ── NAME SCREEN ── */
+  #name-screen { justify-content: center; min-height: 100vh; gap: 20px; }
+  #name-screen .logo { text-align: center; }
+  .eyebrow { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-mid); font-weight: 300; }
+  #name-screen h1 { font-family: 'Playfair Display', serif; font-size: 32px; color: var(--rose); margin-top: 4px; }
+  .tagline { font-size: 14px; color: var(--text-mid); font-style: italic; margin-top: 4px; }
+
+  #name-card {
+    background: white; border-radius: 20px; border: 1px solid var(--rose-light);
+    padding: 28px 24px; width: 100%; display: flex; flex-direction: column; gap: 14px;
+    box-shadow: 0 4px 24px rgba(196,96,126,0.08);
+  }
+  #name-card label { font-size: 13px; color: var(--text-mid); font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+  #name-input {
+    width: 100%; padding: 13px 16px; border-radius: 12px;
+    border: 1.5px solid var(--rose-light); font-family: 'Lato', sans-serif;
+    font-size: 16px; color: var(--text-dark); background: var(--cream); outline: none; transition: border-color 0.2s;
+  }
+  #name-input:focus { border-color: var(--rose); }
+  #name-input::placeholder { color: #cbb0bb; }
+  #name-error { font-size: 12px; color: var(--rose); text-align: center; min-height: 16px; }
+  #start-btn {
+    width: 100%; padding: 14px; background: var(--rose); color: white; border: none;
+    border-radius: 50px; font-family: 'Lato', sans-serif; font-size: 15px; font-weight: 700;
+    letter-spacing: 0.5px; cursor: pointer; transition: background 0.2s, transform 0.1s;
+  }
+  #start-btn:active { background: #a84d68; transform: scale(0.98); }
+
+  /* ── GAME SCREEN ── */
+  #game-header { text-align: center; animation: fadeDown 0.5s ease both; }
+  #game-header h1 { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--rose); line-height: 1.1; }
+  #game-header .subtitle { font-size: 12px; color: var(--text-mid); font-style: italic; margin-top: 2px; }
+
+  #scorebar {
+    display: flex; align-items: center; justify-content: space-between;
+    width: 100%; padding: 8px 14px; background: white; border-radius: 50px;
+    border: 1px solid var(--rose-light); font-size: 12px; color: var(--text-mid);
+    animation: fadeDown 0.5s 0.1s ease both;
+  }
+  #scorebar .stat { display: flex; align-items: center; gap: 4px; }
+  #scorebar .stat-val { font-weight: 700; color: var(--rose); font-size: 14px; }
+  #scorebar .divider { width: 1px; height: 16px; background: var(--rose-light); }
+
+  #diff-row { display: flex; gap: 8px; animation: fadeUp 0.5s 0.15s ease both; }
+  .diff-btn {
+    padding: 5px 14px; border-radius: 50px; border: 1.5px solid var(--rose-light);
+    background: white; color: var(--text-mid); font-size: 12px; font-family: 'Lato', sans-serif;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .diff-btn.active { background: var(--rose); color: white; border-color: var(--rose); }
+
+  #maze-wrapper {
+    position: relative; border-radius: 16px; overflow: hidden;
+    box-shadow: 0 0 0 3px white, 0 0 0 5px var(--rose-light), 0 8px 30px rgba(196,96,126,0.15);
+    animation: fadeUp 0.5s 0.2s ease both; flex-shrink: 0;
+  }
+  canvas { display: block; }
+
+  /* ── WIN OVERLAY ── */
+  #win-overlay {
+    position: absolute; inset: 0; background: rgba(253,241,245,0.97);
+    display: none; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  }
+  #win-overlay.show { display: flex; animation: popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275) both; }
+  #win-emoji { font-size: 48px; line-height: 1; animation: bounce 1s 0.4s ease infinite alternate; }
+  #win-title { font-family: 'Playfair Display', serif; font-size: 26px; color: var(--rose); }
+  #win-subtitle { font-size: 13px; color: var(--text-mid); font-style: italic; }
+  #win-stats { font-size: 13px; color: var(--text-mid); }
+  #saving-status { font-size: 12px; color: var(--sage); font-style: italic; min-height: 18px; }
+  #see-leaderboard-btn {
+    margin-top: 4px; padding: 11px 28px; background: var(--rose); color: white;
+    border: none; border-radius: 50px; font-family: 'Lato', sans-serif;
+    font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.2s, transform 0.1s;
+  }
+  #see-leaderboard-btn:active { background: #a84d68; transform: scale(0.96); }
+  #play-again-inline {
+    font-size: 12px; color: var(--text-mid); background: none; border: none;
+    cursor: pointer; text-decoration: underline; font-family: 'Lato', sans-serif; padding: 4px;
+  }
+
+  /* ── D-PAD ── */
+  #dpad {
+    display: grid; grid-template-columns: repeat(3, 56px); grid-template-rows: repeat(2, 56px);
+    gap: 6px; animation: fadeUp 0.5s 0.25s ease both;
+  }
+  .dpad-btn {
+    width: 56px; height: 56px; border-radius: 14px; border: 1.5px solid var(--rose-light);
+    background: white; color: var(--rose); font-size: 22px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; user-select: none; -webkit-user-select: none;
+    transition: background 0.1s, transform 0.1s; box-shadow: 0 2px 8px rgba(196,96,126,0.1);
+  }
+  .dpad-btn:active { background: var(--rose-light); transform: scale(0.93); }
+  #btn-up    { grid-column: 2; grid-row: 1; }
+  #btn-left  { grid-column: 1; grid-row: 2; }
+  #btn-down  { grid-column: 2; grid-row: 2; }
+  #btn-right { grid-column: 3; grid-row: 2; }
+
+  #bottom-row { display: flex; align-items: center; gap: 10px; animation: fadeUp 0.5s 0.3s ease both; }
+  #new-maze-btn {
+    padding: 9px 18px; border-radius: 50px; background: transparent;
+    color: var(--rose); border: 1.5px solid var(--rose-light); font-family: 'Lato', sans-serif;
+    font-size: 13px; font-weight: 700; cursor: pointer; transition: background 0.15s;
+  }
+  #new-maze-btn:active { background: var(--rose-light); }
+  #hint-btn {
+    padding: 9px 18px; border-radius: 50px; background: transparent;
+    color: var(--sage); border: 1.5px solid #c0dfc8; font-family: 'Lato', sans-serif;
+    font-size: 13px; font-weight: 700; cursor: pointer; transition: background 0.15s;
+  }
+  #hint-btn:active { background: var(--sage-light); }
+
+  #legend { display: flex; gap: 16px; font-size: 11px; color: var(--text-mid); animation: fadeUp 0.5s 0.35s ease both; }
+  #legend span { display: flex; align-items: center; gap: 4px; }
+
+  /* ── LEADERBOARD SCREEN ── */
+  #lb-screen { min-height: 100vh; padding-top: 20px; }
+  #lb-header { text-align: center; width: 100%; margin-bottom: 4px; }
+  #lb-header h2 { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--rose); }
+  #lb-header p { font-size: 13px; color: var(--text-mid); font-style: italic; margin-top: 2px; }
+
+  #lb-tabs { display: flex; gap: 6px; width: 100%; }
+  .lb-tab {
+    flex: 1; padding: 7px 0; border-radius: 50px; border: 1.5px solid var(--rose-light);
+    background: white; color: var(--text-mid); font-size: 12px; font-family: 'Lato', sans-serif;
+    font-weight: 700; cursor: pointer; transition: all 0.15s; text-align: center;
+  }
+  .lb-tab.active { background: var(--rose); color: white; border-color: var(--rose); }
+
+  #lb-list { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+  #lb-loading, #lb-empty { font-size: 14px; color: var(--text-mid); text-align: center; padding: 30px 0; font-style: italic; }
+
+  .lb-row {
+    display: flex; align-items: center; gap: 12px; background: white;
+    border-radius: 14px; border: 1px solid var(--rose-light); padding: 11px 14px;
+    animation: fadeUp 0.3s ease both;
+  }
+  .lb-row.me { border-color: var(--rose); background: var(--rose-pale); }
+  .lb-row.gold   { border-color: #d4a843; }
+  .lb-row.silver { border-color: #aaa; }
+  .lb-row.bronze { border-color: #c87533; }
+
+  .lb-rank { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; width: 28px; text-align: center; flex-shrink: 0; color: var(--text-mid); }
+  .lb-rank.gold   { color: #d4a843; }
+  .lb-rank.silver { color: #888; }
+  .lb-rank.bronze { color: #c87533; }
+
+  .lb-info { flex: 1; min-width: 0; }
+  .lb-name { font-weight: 700; font-size: 14px; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lb-meta { font-size: 11px; color: var(--text-mid); margin-top: 1px; }
+  .lb-you-badge { font-size: 10px; background: var(--rose); color: white; border-radius: 50px; padding: 1px 7px; margin-left: 6px; font-weight: 700; vertical-align: middle; }
+  .lb-time { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--rose); font-weight: 700; flex-shrink: 0; }
+
+  #lb-bottom { display: flex; gap: 10px; width: 100%; margin-top: 4px; }
+  #play-again-btn {
+    flex: 1; padding: 12px; background: var(--rose); color: white; border: none;
+    border-radius: 50px; font-family: 'Lato', sans-serif; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: background 0.2s, transform 0.1s;
+  }
+  #play-again-btn:active { background: #a84d68; transform: scale(0.97); }
+  #refresh-lb-btn {
+    padding: 12px 16px; background: transparent; color: var(--text-mid);
+    border: 1.5px solid var(--rose-light); border-radius: 50px;
+    font-family: 'Lato', sans-serif; font-size: 13px; cursor: pointer;
+  }
+  #refresh-lb-btn:active { background: var(--rose-light); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeUp   { from{opacity:0;transform:translateY(12px)}  to{opacity:1;transform:translateY(0)} }
+  @keyframes popIn    { from{opacity:0;transform:scale(0.85)}       to{opacity:1;transform:scale(1)} }
+  @keyframes bounce   { from{transform:translateY(0)}               to{transform:translateY(-10px)} }
+</style>
+</head>
+<body>
+
+<!-- ══════ NAME ENTRY SCREEN ══════ -->
+<div id="name-screen" class="screen active">
+  <div class="logo">
+    <div class="eyebrow">Baby Shower Game</div>
+    <h1>Find Your Way Home 🍼</h1>
+    <p class="tagline">Guide the baby to Mom &amp; Dad</p>
+  </div>
+  <div id="name-card">
+    <label for="name-input">Your name</label>
+    <input id="name-input" type="text" placeholder="e.g. Aunt Sara" maxlength="24" autocomplete="off" />
+    <div id="name-error"></div>
+    <button id="start-btn">Let's Play →</button>
+  </div>
+</div>
+
+<!-- ══════ GAME SCREEN ══════ -->
+<div id="game-screen" class="screen">
+  <div id="game-header">
+    <div class="eyebrow">Baby Shower Maze</div>
+    <h1>Find Your Way Home 🍼</h1>
+    <div class="subtitle">Guide the baby to Mom &amp; Dad · <span id="player-greeting"></span></div>
+  </div>
+
+  <div id="scorebar">
+    <div class="stat">👣 Steps: <span class="stat-val" id="steps-val">0</span></div>
+    <div class="divider"></div>
+    <div class="stat">⏱ <span class="stat-val" id="time-val">0:00</span></div>
+    <div class="divider"></div>
+    <div class="stat">🏆 Best: <span class="stat-val" id="best-val">—</span></div>
+  </div>
+
+  <div id="diff-row">
+    <button class="diff-btn active" data-size="8">Easy</button>
+    <button class="diff-btn" data-size="12">Medium</button>
+    <button class="diff-btn" data-size="16">Hard</button>
+  </div>
+
+  <div id="maze-wrapper">
+    <canvas id="maze"></canvas>
+    <div id="win-overlay">
+      <div id="win-emoji">🎉</div>
+      <div id="win-title">Baby's Home!</div>
+      <div id="win-subtitle">Mom &amp; Dad are so happy 💕</div>
+      <div id="win-stats"></div>
+      <div id="saving-status"></div>
+      <button id="see-leaderboard-btn">See Leaderboard 🏆</button>
+      <button id="play-again-inline">Play again instead</button>
+    </div>
+  </div>
+
+  <div id="dpad">
+    <button class="dpad-btn" id="btn-up">↑</button>
+    <button class="dpad-btn" id="btn-left">←</button>
+    <button class="dpad-btn" id="btn-down">↓</button>
+    <button class="dpad-btn" id="btn-right">→</button>
+  </div>
+
+  <div id="bottom-row">
+    <button id="new-maze-btn">New Maze</button>
+    <button id="hint-btn">Hint 💡</button>
+  </div>
+
+  <div id="legend">
+    <span>👶 You (start)</span>
+    <span>👨‍👩‍👧 Parents (goal)</span>
+  </div>
+</div>
+
+<!-- ══════ LEADERBOARD SCREEN ══════ -->
+<div id="lb-screen" class="screen">
+  <div id="lb-header">
+    <h2>🏆 Leaderboard</h2>
+    <p>Fastest babies to reach Mom &amp; Dad</p>
+  </div>
+
+  <div id="lb-tabs">
+    <button class="lb-tab active" data-size="8">Easy</button>
+    <button class="lb-tab" data-size="12">Medium</button>
+    <button class="lb-tab" data-size="16">Hard</button>
+  </div>
+
+  <div id="lb-list">
+    <div id="lb-loading">Loading scores… 👶</div>
+  </div>
+
+  <div id="lb-bottom">
+    <button id="play-again-btn">Play Again 🍼</button>
+    <button id="refresh-lb-btn">↻ Refresh</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, push, query, orderByChild, limitToFirst, get }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+// ─────────────────────────────────────────────────────────
+// 🔧 SETUP: Replace the placeholder values below with your
+//    real Firebase config from:
+//    Firebase Console → Project Settings → Your apps → SDK setup
+// ─────────────────────────────────────────────────────────
+const firebaseConfig = {
+  apiKey:            "REPLACE_WITH_YOUR_API_KEY",
+  authDomain:        "su-baby-sprinkle.firebaseapp.com",
+  databaseURL:       "https://su-baby-sprinkle-default-rtdb.firebaseio.com",
+  projectId:         "su-baby-sprinkle",
+  storageBucket:     "su-baby-sprinkle.appspot.com",
+  messagingSenderId: "REPLACE_WITH_YOUR_SENDER_ID",
+  appId:             "REPLACE_WITH_YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
+
+// ─── STATE ────────────────────────────────────────────────
+let playerName = '';
+let COLS = 8, ROWS = 8;
+let maze = [], player = {x:0,y:0}, steps = 0, won = false;
+let timerInterval = null, elapsed = 0;
+let bestTimes = {8:null, 12:null, 16:null};
+let hintPath = [], showHint = false, hintTimeout = null;
+let lastScore = null;
+let lbSize = 8;
+
+// ─── CANVAS ───────────────────────────────────────────────
+const canvas = document.getElementById('maze');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  const size = Math.min(window.innerWidth - 40, 360);
+  canvas.width = size; canvas.height = size;
+  const wrap = document.getElementById('maze-wrapper');
+  wrap.style.width = size + 'px'; wrap.style.height = size + 'px';
+}
+
+// ─── SCREENS ──────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ─── NAME ENTRY ───────────────────────────────────────────
+document.getElementById('start-btn').addEventListener('click', () => {
+  const val = document.getElementById('name-input').value.trim();
+  if (!val) { document.getElementById('name-error').textContent = 'Please enter your name to play!'; return; }
+  document.getElementById('name-error').textContent = '';
+  playerName = val;
+  document.getElementById('player-greeting').textContent = 'Good luck, ' + playerName + '!';
+  showScreen('game-screen');
+  resizeCanvas();
+  newGame();
+});
+document.getElementById('name-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('start-btn').click();
+});
+
+// ─── MAZE GENERATION ──────────────────────────────────────
+function idx(x,y) { return y * COLS + x; }
+
+function generateMaze() {
+  maze = Array.from({length: COLS*ROWS}, () =>
+    ({top:true,right:true,bottom:true,left:true,visited:false}));
+  function carve(x,y) {
+    maze[idx(x,y)].visited = true;
+    const dirs = [
+      {dx:0,dy:-1,wall:'top',opp:'bottom'},{dx:1,dy:0,wall:'right',opp:'left'},
+      {dx:0,dy:1,wall:'bottom',opp:'top'},{dx:-1,dy:0,wall:'left',opp:'right'}
+    ].sort(() => Math.random()-0.5);
+    for (const d of dirs) {
+      const nx=x+d.dx, ny=y+d.dy;
+      if (nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&!maze[idx(nx,ny)].visited) {
+        maze[idx(x,y)][d.wall]=false; maze[idx(nx,ny)][d.opp]=false; carve(nx,ny);
+      }
+    }
+  }
+  carve(0,0);
+}
+
+// ─── PATHFINDING ──────────────────────────────────────────
+function findPath(sx,sy,ex,ey) {
+  const visited=new Set(), queue=[[sx,sy,[]]];
+  visited.add(idx(sx,sy));
+  while (queue.length>0) {
+    const [x,y,path]=queue.shift(), newPath=[...path,{x,y}];
+    if (x===ex&&y===ey) return newPath;
+    const c=maze[idx(x,y)];
+    for (const m of [{dx:0,dy:-1,wall:'top'},{dx:1,dy:0,wall:'right'},{dx:0,dy:1,wall:'bottom'},{dx:-1,dy:0,wall:'left'}]) {
+      const nx=x+m.dx, ny=y+m.dy;
+      if (!c[m.wall]&&nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&!visited.has(idx(nx,ny))) {
+        visited.add(idx(nx,ny)); queue.push([nx,ny,newPath]);
+      }
+    }
+  }
+  return [];
+}
+
+// ─── DRAW ─────────────────────────────────────────────────
+function draw() {
+  const W=canvas.width/COLS, H=canvas.height/ROWS;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#fffaf5'; ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  for (let y=0;y<ROWS;y++) for (let x=0;x<COLS;x++) {
+    if ((x+y)%2===0) { ctx.fillStyle='rgba(196,96,126,0.03)'; ctx.fillRect(x*W,y*H,W,H); }
+  }
+
+  if (showHint&&hintPath.length>0) {
+    ctx.fillStyle='rgba(122,171,132,0.18)';
+    for (const p of hintPath) { ctx.beginPath(); ctx.roundRect(p.x*W+3,p.y*H+3,W-6,H-6,4); ctx.fill(); }
+  }
+
+  ctx.fillStyle='rgba(122,171,132,0.22)';
+  ctx.beginPath(); ctx.roundRect((COLS-1)*W+2,(ROWS-1)*H+2,W-4,H-4,6); ctx.fill();
+
+  ctx.strokeStyle='#e8c0cf'; ctx.lineWidth=1.8; ctx.lineCap='round';
+  for (let y=0;y<ROWS;y++) for (let x=0;x<COLS;x++) {
+    const c=maze[idx(x,y)], px=x*W, py=y*H;
+    ctx.beginPath();
+    if(c.top)    {ctx.moveTo(px,py);   ctx.lineTo(px+W,py);}
+    if(c.right)  {ctx.moveTo(px+W,py); ctx.lineTo(px+W,py+H);}
+    if(c.bottom) {ctx.moveTo(px,py+H); ctx.lineTo(px+W,py+H);}
+    if(c.left)   {ctx.moveTo(px,py);   ctx.lineTo(px,py+H);}
+    ctx.stroke();
+  }
+
+  ctx.strokeStyle='#c4607e'; ctx.lineWidth=2.5;
+  ctx.strokeRect(1,1,canvas.width-2,canvas.height-2);
+
+  const fs=Math.floor(W*0.62);
+  ctx.font=`${fs}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('👨‍👩‍👧',(COLS-1)*W+W/2,(ROWS-1)*H+H/2+1);
+  ctx.fillText('👶',player.x*W+W/2,player.y*H+H/2+1);
+}
+
+// ─── MOVE ─────────────────────────────────────────────────
+function move(dx,dy) {
+  if (won) return;
+  const {x,y}=player, c=maze[idx(x,y)];
+  let moved=false;
+  if(dx===1  &&!c.right  &&x<COLS-1){player.x++;moved=true;}
+  if(dx===-1 &&!c.left   &&x>0)     {player.x--;moved=true;}
+  if(dy===1  &&!c.bottom &&y<ROWS-1){player.y++;moved=true;}
+  if(dy===-1 &&!c.top    &&y>0)     {player.y--;moved=true;}
+  if(!moved) return;
+  if(steps===0) startTimer();
+  steps++;
+  document.getElementById('steps-val').textContent=steps;
+  showHint=false; draw();
+  if(player.x===COLS-1&&player.y===ROWS-1) winGame();
+}
+
+// ─── TIMER ────────────────────────────────────────────────
+function startTimer() {
+  clearInterval(timerInterval);
+  timerInterval=setInterval(()=>{
+    elapsed++;
+    const m=Math.floor(elapsed/60),s=elapsed%60;
+    document.getElementById('time-val').textContent=m+':'+String(s).padStart(2,'0');
+  },1000);
+}
+function stopTimer() { clearInterval(timerInterval); }
+
+// ─── WIN ──────────────────────────────────────────────────
+async function winGame() {
+  won=true; stopTimer();
+
+  const key=COLS;
+  if(!bestTimes[key]||elapsed<bestTimes[key]) {
+    bestTimes[key]=elapsed;
+    const m=Math.floor(elapsed/60),s=elapsed%60;
+    document.getElementById('best-val').textContent=m+':'+String(s).padStart(2,'0');
+  }
+
+  const m=Math.floor(elapsed/60),s=elapsed%60;
+  document.getElementById('win-stats').textContent=`${steps} steps · ${m}:${String(s).padStart(2,'0')}`;
+  document.getElementById('win-emoji').textContent=['🎉','🎊','💕','🌸','✨'][Math.floor(Math.random()*5)];
+  document.getElementById('win-overlay').classList.add('show');
+
+  lastScore={name:playerName, steps, time:elapsed, difficulty:key, ts:Date.now()};
+
+  const savingEl=document.getElementById('saving-status');
+  savingEl.textContent='Saving your score…';
+  try {
+    await push(ref(db,`maze_scores/${key}`), lastScore);
+    savingEl.textContent='✓ Score saved!';
+  } catch(e) {
+    savingEl.textContent='(could not save — check Firebase config)';
+    console.error('Firebase save error:',e);
+  }
+}
+
+// ─── NEW GAME ─────────────────────────────────────────────
+function newGame() {
+  stopTimer(); generateMaze();
+  player={x:0,y:0}; steps=0; elapsed=0; won=false; showHint=false; hintPath=[];
+  document.getElementById('steps-val').textContent='0';
+  document.getElementById('time-val').textContent='0:00';
+  document.getElementById('win-overlay').classList.remove('show');
+  draw();
+}
+
+// ─── HINT ─────────────────────────────────────────────────
+function showHintFn() {
+  hintPath=findPath(player.x,player.y,COLS-1,ROWS-1);
+  showHint=true; draw();
+  clearTimeout(hintTimeout);
+  hintTimeout=setTimeout(()=>{showHint=false;draw();},2500);
+}
+
+// ─── LEADERBOARD ──────────────────────────────────────────
+function esc(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function loadLeaderboard(size) {
+  lbSize=size;
+  const listEl=document.getElementById('lb-list');
+  listEl.innerHTML='<div id="lb-loading">Loading scores… 👶</div>';
+
+  document.querySelectorAll('.lb-tab').forEach(t =>
+    t.classList.toggle('active', parseInt(t.dataset.size)===size));
+
+  try {
+    const q=query(ref(db,`maze_scores/${size}`),orderByChild('time'),limitToFirst(50));
+    const snap=await get(q);
+    const entries=[];
+    snap.forEach(child => entries.push(child.val()));
+    entries.sort((a,b) => a.time-b.time || a.steps-b.steps);
+
+    if(entries.length===0){
+      listEl.innerHTML='<div id="lb-empty">No scores yet — be the first! 🍼</div>';
+      return;
+    }
+
+    listEl.innerHTML='';
+    entries.slice(0,15).forEach((e,i) => {
+      const rank=i+1;
+      const rankClass=rank===1?'gold':rank===2?'silver':rank===3?'bronze':'';
+      const medal=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
+      const m=Math.floor(e.time/60),s=e.time%60;
+      const timeStr=m+':'+String(s).padStart(2,'0');
+      const diffLabel=size===8?'Easy':size===12?'Medium':'Hard';
+      const isMe=lastScore&&e.name===lastScore.name&&e.time===lastScore.time&&e.steps===lastScore.steps&&e.ts===lastScore.ts;
+
+      const row=document.createElement('div');
+      row.className='lb-row'+(rankClass?' '+rankClass:'')+(isMe?' me':'');
+      row.style.animationDelay=(i*0.04)+'s';
+      row.innerHTML=`
+        <div class="lb-rank ${rankClass}">${medal}</div>
+        <div class="lb-info">
+          <div class="lb-name">${esc(e.name)}${isMe?'<span class="lb-you-badge">You</span>':''}</div>
+          <div class="lb-meta">${e.steps} steps · ${diffLabel}</div>
+        </div>
+        <div class="lb-time">${timeStr}</div>`;
+      listEl.appendChild(row);
+    });
+  } catch(err) {
+    listEl.innerHTML='<div id="lb-empty">Could not load scores — check Firebase config.</div>';
+    console.error(err);
+  }
+}
+
+// ─── BUTTON WIRING ────────────────────────────────────────
+document.getElementById('btn-up').addEventListener('click',    ()=>move(0,-1));
+document.getElementById('btn-down').addEventListener('click',  ()=>move(0,1));
+document.getElementById('btn-left').addEventListener('click',  ()=>move(-1,0));
+document.getElementById('btn-right').addEventListener('click', ()=>move(1,0));
+document.getElementById('new-maze-btn').addEventListener('click', newGame);
+document.getElementById('hint-btn').addEventListener('click', showHintFn);
+
+document.getElementById('see-leaderboard-btn').addEventListener('click', ()=>{
+  showScreen('lb-screen');
+  loadLeaderboard(COLS);
+});
+document.getElementById('play-again-inline').addEventListener('click', ()=>{
+  document.getElementById('win-overlay').classList.remove('show');
+  newGame();
+});
+document.getElementById('play-again-btn').addEventListener('click', ()=>{
+  showScreen('game-screen'); newGame();
+});
+document.getElementById('refresh-lb-btn').addEventListener('click', ()=>loadLeaderboard(lbSize));
+
+document.querySelectorAll('.lb-tab').forEach(tab =>
+  tab.addEventListener('click', ()=>loadLeaderboard(parseInt(tab.dataset.size))));
+
+document.querySelectorAll('.diff-btn').forEach(btn =>
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    COLS=ROWS=parseInt(btn.dataset.size); newGame();
+  }));
+
+// Keyboard
+document.addEventListener('keydown', e=>{
+  const map={ArrowUp:'up',w:'up',ArrowDown:'down',s:'down',ArrowLeft:'left',a:'left',ArrowRight:'right',d:'right'};
+  if(map[e.key]){
+    e.preventDefault();
+    const dirs={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]};
+    const [dx,dy]=dirs[map[e.key]]; move(dx,dy);
+  }
+});
+
+// Swipe
+let touchStart=null;
+document.addEventListener('touchstart',e=>{
+  if(e.target.closest('#maze-wrapper')) touchStart={x:e.touches[0].clientX,y:e.touches[0].clientY};
+},{passive:true});
+document.addEventListener('touchend',e=>{
+  if(!touchStart) return;
+  const dx=e.changedTouches[0].clientX-touchStart.x;
+  const dy=e.changedTouches[0].clientY-touchStart.y;
+  if(Math.max(Math.abs(dx),Math.abs(dy))<10){touchStart=null;return;}
+  Math.abs(dx)>Math.abs(dy)?move(dx>0?1:-1,0):move(0,dy>0?1:-1);
+  touchStart=null;
+},{passive:true});
+</script>
+</body>
+</html>
