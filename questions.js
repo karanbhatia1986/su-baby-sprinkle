@@ -25,7 +25,19 @@ const triviaQuestions = [
     },
     {
         id: 5,
+        question: "Who will have an easier time letting baby cry?",
+        options: ["Karan", "Su"],
+        correctAnswer: null
+    },
+    {
+        id: 6,
         question: "Who will change the most diapers?",
+        options: ["Karan", "Su"],
+        correctAnswer: null
+    },
+    {
+        id: 7,
+        question: "Who can sleep through loud noises and baby cry?",
         options: ["Karan", "Su"],
         correctAnswer: null
     }
