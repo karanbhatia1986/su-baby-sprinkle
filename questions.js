@@ -25,5 +25,11 @@ const triviaQuestions = [
         question: "Who is the reason why Karan and Su are always late?",
         options: ["Karan", "Su", "Arya", "Main der karta nahi, der ho jaati hai"],
         correctAnswer: null
+    },
+    {
+        id: 5,
+        question: "Who loves Arya more?",
+        options: ["Karan", "Su", "Both equally", "Neither"],
+        correctAnswer: null
     }
 ];
