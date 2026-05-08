@@ -1,12 +1,9 @@
-// Edit this file to customize your trivia questions
-// Add as many questions as you want!
-
 const triviaQuestions = [
     {
         id: 1,
         question: "What weighed more as a baby?",
         options: ["Karan", "Su"],
-        correctAnswer: null // Will be set by host
+        correctAnswer: null
     },
     {
         id: 2,
@@ -22,14 +19,14 @@ const triviaQuestions = [
     },
     {
         id: 4,
-        question: "Who is the reason why Karan and Su are always late?",
-        options: ["Karan", "Su", "Arya", "Main der karta nahi, der ho jaati hai"],
+        question: "Who told their family first about their baby?",
+        options: ["Karan", "Su"],
         correctAnswer: null
     },
     {
         id: 5,
-        question: "Who loves Arya more?",
-        options: ["Karan", "Su", "Both equally", "Neither"],
+        question: "?",
+        options: ["Karan", "Su"],
         correctAnswer: null
     }
 ];
