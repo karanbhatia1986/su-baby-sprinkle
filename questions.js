@@ -4,20 +4,20 @@
 const triviaQuestions = [
     {
         id: 1,
-        question: "What does Su call Karan?",
-        options: ["Swami", "Pati Dev", "Pran Nath", "Arya ke papa"],
+        question: "What weighed more as a baby?",
+        options: ["Karan", "Su"],
         correctAnswer: null // Will be set by host
     },
     {
         id: 2,
-        question: "What does Karan call Su?",
-        options: ["My Queen", "Maalkin", "Mere khyaalon ki malika", "Su"],
+        question: "What sleeps more like a baby?",
+        options: ["Karan", "Su"],
         correctAnswer: null
     },
     {
         id: 3,
-        question: "Where did Karan and Su meet?",
-        options: ["Through some friends", "At a dating website", "Arranged by parents", "College"],
+        question: "Who will change the most diapers?",
+        options: ["Karan", "Su"],
         correctAnswer: null
     },
     {
