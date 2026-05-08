@@ -46,5 +46,11 @@ const triviaQuestions = [
         question: "Who will do the most baby talk?",
         options: ["Karan", "Su"],
         correctAnswer: null
+    },
+    {
+        id: 9,
+        question: "?",
+        options: ["Karan", "Su"],
+        correctAnswer: null
     }
 ];
