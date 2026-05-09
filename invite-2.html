@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You're Invited! Baby Sprinkle & Gender Reveal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #ffc3e1 0%, #c3d9ff 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .invitation {
+            background: white;
+            max-width: 700px;
+            width: 100%;
+            border-radius: 0;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.25);
+            overflow: hidden;
+            animation: slideIn 0.8s ease-out;
+            border: 8px solid #fff;
+            outline: 2px solid #e8b4d4;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .decorative-top {
+            height: 15px;
+            background: linear-gradient(90deg, #ffc3e1 0%, #e8b4d4 25%, #c3d9ff 50%, #a8c5ff 75%, #ffc3e1 100%);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ffe6f0 0%, #e6f0ff 100%);
+            padding: 50px 40px 40px;
+            text-align: center;
+            color: #5a4a6a;
+            border-bottom: 3px double #e8b4d4;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            font-weight: normal;
+            letter-spacing: 2px;
+            color: #8b5a8e;
+            text-transform: uppercase;
+            font-family: 'Palatino', serif;
+        }
+
+        .header .subtitle {
+            font-size: 1.3rem;
+            font-style: italic;
+            color: #6a8ab5;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+        }
+
+        .divider {
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, #ffc3e1, #c3d9ff);
+            margin: 20px auto;
+        }
+
+        .photo-section {
+            text-align: center;
+            padding: 30px 40px 20px;
+            background: linear-gradient(180deg, #fff5fa 0%, #f5f9ff 100%);
+        }
+
+        .photo-container {
+            width: 250px;
+            height: 250px;
+            margin: 0 auto;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 8px solid white;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15),
+                        inset 0 0 0 3px #ffc3e1,
+                        inset 0 0 0 6px white,
+                        inset 0 0 0 9px #c3d9ff;
+        }
+
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffe6f0 0%, #e6f0ff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .content {
+            padding: 40px 40px 30px;
+        }
+
+        .announcement {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .announcement h2 {
+            color: #8b5a8e;
+            font-size: 2rem;
+            margin-bottom: 15px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+
+        .announcement p {
+            color: #6a8ab5;
+            font-size: 1.15rem;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .details-box {
+            background: linear-gradient(135deg, #fff5fa 0%, #f5f9ff 100%);
+            padding: 35px;
+            border-radius: 0;
+            margin-bottom: 35px;
+            border: 2px solid #e8b4d4;
+            border-left: 6px solid #ffc3e1;
+            border-right: 6px solid #c3d9ff;
+        }
+
+        .detail-item {
+            margin: 20px 0;
+            display: flex;
+            align-items: flex-start;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .detail-item .icon {
+            font-size: 1.8rem;
+            margin-right: 20px;
+            min-width: 35px;
+            text-align: center;
+        }
+
+        .detail-item .content-text {
+            flex: 1;
+        }
+
+        .detail-item strong {
+            color: #8b5a8e;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .detail-item .value {
+            color: #5a4a6a;
+            font-size: 1.15rem;
+        }
+
+        .special-note {
+            background: linear-gradient(135deg, #ffe6f0 0%, #e6f0ff 100%);
+            padding: 20px;
+            border-radius: 0;
+            text-align: center;
+            margin-bottom: 35px;
+            border-top: 2px solid #ffc3e1;
+            border-bottom: 2px solid #c3d9ff;
+        }
+
+        .special-note p {
+            color: #6a8ab5;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+
+        .rsvp-section {
+            background: linear-gradient(135deg, #fff5fa 0%, #f5f9ff 100%);
+            padding: 40px 35px;
+            border-radius: 0;
+            border: 3px double #e8b4d4;
+        }
+
+        .rsvp-section h3 {
+            color: #8b5a8e;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+            font-weight: normal;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #5a4a6a;
+            font-weight: bold;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e8b4d4;
+            border-radius: 0;
+            font-size: 1rem;
+            font-family: Georgia, serif;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #8b5a8e;
+            box-shadow: 0 0 0 3px rgba(139, 90, 142, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .radio-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 12px;
+        }
+
+        .radio-option {
+            position: relative;
+        }
+
+        .radio-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .radio-option label {
+            display: block;
+            padding: 18px 20px;
+            border: 2px solid #e8b4d4;
+            border-radius: 0;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            background: white;
+            color: #5a4a6a;
+            text-transform: none;
+        }
+
+        .radio-option:first-child label {
+            border-color: #c3d9ff;
+        }
+
+        .radio-option input[type="radio"]:checked + label {
+            background: linear-gradient(135deg, #8b5a8e 0%, #6a8ab5 100%);
+            color: white;
+            border-color: #8b5a8e;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 90, 142, 0.3);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #8b5a8e 0%, #6a8ab5 100%);
+            color: white;
+            border: none;
+            border-radius: 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 25px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-family: Georgia, serif;
+            box-shadow: 0 6px 20px rgba(139, 90, 142, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(139, 90, 142, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .success-message {
+            display: none;
+            background: linear-gradient(135deg, #e6f9f0 0%, #e6f0ff 100%);
+            color: #2d5a3d;
+            padding: 30px;
+            border-radius: 0;
+            text-align: center;
+            margin-top: 25px;
+            border: 3px double #6ab58a;
+        }
+
+        .success-message h3 {
+            color: #2d5a3d;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+
+        .success-message p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .error-message {
+            display: none;
+            background: #ffe6ea;
+            color: #8b4555;
+            padding: 15px;
+            border-radius: 0;
+            margin-top: 15px;
+            border: 2px solid #ffb3c1;
+            text-align: center;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 35px 20px;
+            color: #8b5a8e;
+            font-style: italic;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, #ffe6f0 0%, #e6f0ff 100%);
+            border-top: 3px double #e8b4d4;
+        }
+
+        .decorative-bottom {
+            height: 15px;
+            background: linear-gradient(90deg, #ffc3e1 0%, #e8b4d4 25%, #c3d9ff 50%, #a8c5ff 75%, #ffc3e1 100%);
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header .subtitle {
+                font-size: 1.1rem;
+            }
+
+            .photo-container {
+                width: 200px;
+                height: 200px;
+            }
+
+            .content {
+                padding: 30px 25px;
+            }
+
+            .details-box {
+                padding: 25px 20px;
+            }
+
+            .radio-group {
+                grid-template-columns: 1fr;
+            }
+
+            .rsvp-section {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="invitation">
+        <div class="decorative-top"></div>
+
+        <div class="header">
+            <h1>You're Invited</h1>
+            <div class="divider"></div>
+            <div class="subtitle">Baby Sprinkle & Gender Reveal</div>
+        </div>
+
+        <div class="photo-section">
+            <div class="photo-container">
+                <!-- REPLACE 'parents-photo.jpg' WITH YOUR PHOTO FILE -->
+                <img src="parents-photo.jpg" alt="Parents" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="photo-placeholder" style="display: none;">👨‍👩‍👶</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="announcement">
+                <h2>Please Join Us</h2>
+                <p>We're celebrating the upcoming arrival of our little one<br>and revealing the big surprise!</p>
+            </div>
+
+            <div class="details-box">
+                <div class="detail-item">
+                    <span class="icon">📅</span>
+                    <div class="content-text">
+                        <strong>Date</strong>
+                        <div class="value">Friday, May 30th, 2026</div>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <span class="icon">🕐</span>
+                    <div class="content-text">
+                        <strong>Time</strong>
+                        <div class="value">3:00 PM - 6:00 PM</div>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <span class="icon">📍</span>
+                    <div class="content-text">
+                        <strong>Location</strong>
+                        <div class="value">Jersey City, New Jersey</div>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <span class="icon">👗</span>
+                    <div class="content-text">
+                        <strong>Dress Code</strong>
+                        <div class="value">Smart Casual</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="special-note">
+                <p>✨ Pink or Blue? Come find out with us! ✨</p>
+            </div>
+
+            <div class="rsvp-section">
+                <h3>Kindly RSVP</h3>
+                <form id="rsvpForm">
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="guestName" required placeholder="Enter your full name">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="guestEmail" placeholder="your.email@example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="guestPhone" placeholder="(555) 123-4567">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Will You Be Attending? *</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="attendingYes" name="attending" value="yes" required>
+                                <label for="attendingYes">✓ Joyfully Accept</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="attendingNo" name="attending" value="no">
+                                <label for="attendingNo">✗ Regretfully Decline</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="guestsGroup" style="display: none;">
+                        <label>Number of Guests</label>
+                        <select id="numGuests">
+                            <option value="1">1 Guest</option>
+                            <option value="2">2 Guests</option>
+                            <option value="3">3 Guests</option>
+                            <option value="4">4 Guests</option>
+                            <option value="5">5 Guests</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Dietary Restrictions</label>
+                        <input type="text" id="dietary" placeholder="Vegetarian, allergies, etc.">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Message for the Parents</label>
+                        <textarea id="message" placeholder="Share your well wishes and excitement..."></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Submit RSVP</button>
+
+                    <div class="error-message" id="errorMessage"></div>
+                </form>
+
+                <div class="success-message" id="successMessage">
+                    <h3>Thank You! 🎉</h3>
+                    <p>Your RSVP has been received.<br>We look forward to celebrating with you!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            We can't wait to share this special moment with you 💕
+        </div>
+
+        <div class="decorative-bottom"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getDatabase, ref, push, set } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyB47Qw26hMQcKr2sC4B8i772wrhTMKo8Ho",
+            authDomain: "su-baby-sprinkle.firebaseapp.com",
+            databaseURL: "https://su-baby-sprinkle-default-rtdb.firebaseio.com",
+            projectId: "su-baby-sprinkle",
+            storageBucket: "su-baby-sprinkle.firebasestorage.app",
+            messagingSenderId: "442824239099",
+            appId: "1:442824239099:web:b90411c9d63d96cdb8cd5e",
+            measurementId: "G-TQLMQ9K64W"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Show/hide guest count based on attendance
+        document.querySelectorAll('input[name="attending"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const guestsGroup = document.getElementById('guestsGroup');
+                if (e.target.value === 'yes') {
+                    guestsGroup.style.display = 'block';
+                } else {
+                    guestsGroup.style.display = 'none';
+                }
+            });
+        });
+
+        // Handle form submission
+        document.getElementById('rsvpForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('guestName').value.trim();
+            const email = document.getElementById('guestEmail').value.trim();
+            const phone = document.getElementById('guestPhone').value.trim();
+            const attending = document.querySelector('input[name="attending"]:checked')?.value;
+            const numGuests = document.getElementById('numGuests').value;
+            const dietary = document.getElementById('dietary').value.trim();
+            const message = document.getElementById('message').value.trim();
+
+            if (!name || !attending) {
+                showError('Please fill in all required fields.');
+                return;
+            }
+
+            try {
+                const rsvpData = {
+                    name: name,
+                    email: email || null,
+                    phone: phone || null,
+                    attending: attending,
+                    numGuests: attending === 'yes' ? parseInt(numGuests) : 0,
+                    dietary: dietary || null,
+                    message: message || null,
+                    submittedAt: Date.now(),
+                    timestamp: new Date().toISOString()
+                };
+
+                const rsvpsRef = ref(db, 'rsvps');
+                const newRsvpRef = push(rsvpsRef);
+                await set(newRsvpRef, rsvpData);
+
+                // Show success message
+                document.getElementById('rsvpForm').style.display = 'none';
+                document.getElementById('successMessage').style.display = 'block';
+
+                console.log('RSVP submitted successfully!');
+            } catch (error) {
+                console.error('Error submitting RSVP:', error);
+                showError('There was an error submitting your RSVP. Please try again.');
+            }
+        });
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
