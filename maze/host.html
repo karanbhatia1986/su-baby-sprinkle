@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karan Baby Shower Maze - Host Control</title>
+    <title>SUSUSU Baby Shower Maze - Host Control</title>
     <style>
         * {
             margin: 0;
@@ -294,7 +294,7 @@
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-        import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, updateDoc, doc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+        import { getDatabase, ref, push, set, onValue, update, get } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
 
         // Firebase configuration
         const firebaseConfig = {
@@ -309,7 +309,7 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const db = getDatabase(app);
 
         let currentGameCode = null;
         let currentGameId = null;
@@ -322,13 +322,6 @@
         async function startNewGame() {
             console.log('Start New Game button clicked!');
 
-            // Check if Firebase is configured
-            if (firebaseConfig.apiKey === "YOUR_API_KEY") {
-                alert('⚠️ Firebase not configured!\n\nPlease update the Firebase configuration in host.html (around line 180).\n\nSee INSTRUCTIONS.txt for help.');
-                console.error('Firebase config still has placeholder values. Update the firebaseConfig object in this file.');
-                return;
-            }
-
             try {
                 console.log('Generating game code...');
                 const difficulty = document.getElementById('difficultySelect').value;
@@ -338,14 +331,16 @@
                 const gameData = {
                     code: currentGameCode,
                     active: true,
-                    createdAt: new Date(),
+                    createdAt: Date.now(),
                     difficulty: parseInt(difficulty)
                 };
 
-                console.log('Attempting to save to Firestore...', gameData);
-                const docRef = await addDoc(collection(db, 'games'), gameData);
-                currentGameId = docRef.id;
-                console.log('Game saved successfully! Document ID:', docRef.id);
+                console.log('Attempting to save to Realtime Database...', gameData);
+                const gamesRef = ref(db, 'games');
+                const newGameRef = push(gamesRef);
+                await set(newGameRef, gameData);
+                currentGameId = newGameRef.key;
+                console.log('Game saved successfully! ID:', currentGameId);
 
                 document.getElementById('gameCodeText').textContent = currentGameCode;
                 document.getElementById('gameCodeDisplay').style.display = 'block';
@@ -359,14 +354,11 @@
             } catch (error) {
                 console.error('Error starting game:', error);
                 console.error('Error details:', error.message);
-                console.error('Error code:', error.code);
 
                 let errorMessage = 'Error starting game:\n\n';
 
-                if (error.code === 'permission-denied') {
-                    errorMessage += '🔒 Permission Denied\n\nFirestore rules may be blocking writes.\nMake sure you:\n1. Enabled Firestore Database\n2. Set rules to test mode\n\nSee SETUP.md for details.';
-                } else if (error.message.includes('projectId')) {
-                    errorMessage += '⚠️ Invalid Firebase Configuration\n\nCheck that your projectId and other config values are correct.';
+                if (error.message.includes('PERMISSION_DENIED')) {
+                    errorMessage += '🔒 Permission Denied\n\nRealtime Database rules may be blocking writes.\n\nGo to Firebase Console → Realtime Database → Rules\nSet rules to allow public access for testing.';
                 } else if (error.message.includes('network')) {
                     errorMessage += '📡 Network Error\n\nCheck your internet connection.';
                 } else {
@@ -381,9 +373,10 @@
             if (!currentGameId) return;
 
             try {
-                await updateDoc(doc(db, 'games', currentGameId), {
+                const gameRef = ref(db, `games/${currentGameId}`);
+                await update(gameRef, {
                     active: false,
-                    endedAt: new Date()
+                    endedAt: Date.now()
                 });
 
                 document.getElementById('gameCodeDisplay').style.display = 'none';
@@ -391,11 +384,6 @@
                 document.getElementById('gameStatus').className = 'status status-inactive';
                 document.getElementById('startGameBtn').style.display = 'block';
                 document.getElementById('endGameBtn').style.display = 'none';
-
-                if (leaderboardListener) {
-                    leaderboardListener();
-                    leaderboardListener = null;
-                }
 
                 alert('Game ended!');
             } catch (error) {
@@ -408,17 +396,16 @@
         function startLeaderboardListener() {
             if (!currentGameCode) return;
 
-            const q = query(
-                collection(db, 'results'),
-                where('gameCode', '==', currentGameCode),
-                orderBy('score', 'desc')
-            );
-
-            leaderboardListener = onSnapshot(q, (snapshot) => {
+            const resultsRef = ref(db, 'results');
+            onValue(resultsRef, (snapshot) => {
                 const results = [];
-                snapshot.forEach((doc) => {
-                    results.push({ id: doc.id, ...doc.data() });
+                snapshot.forEach((childSnapshot) => {
+                    const data = childSnapshot.val();
+                    if (data.gameCode === currentGameCode) {
+                        results.push({ id: childSnapshot.key, ...data });
+                    }
                 });
+                results.sort((a, b) => b.score - a.score);
                 updateLeaderboardDisplay(results);
             });
         }
@@ -459,18 +446,18 @@
             }
 
             try {
-                const q = query(
-                    collection(db, 'results'),
-                    where('gameCode', '==', currentGameCode),
-                    orderBy('score', 'desc')
-                );
-
-                const querySnapshot = await getDocs(q);
+                const resultsRef = ref(db, 'results');
+                const snapshot = await get(resultsRef);
                 const results = [];
-                querySnapshot.forEach((doc) => {
-                    results.push({ id: doc.id, ...doc.data() });
+
+                snapshot.forEach((childSnapshot) => {
+                    const data = childSnapshot.val();
+                    if (data.gameCode === currentGameCode) {
+                        results.push({ id: childSnapshot.key, ...data });
+                    }
                 });
 
+                results.sort((a, b) => b.score - a.score);
                 updateLeaderboardDisplay(results);
             } catch (error) {
                 console.error('Error loading leaderboard:', error);
