@@ -7,7 +7,7 @@ const triviaQuestions = [
     },
     {
         id: 2,
-        question: "What weighed more as a baby?",
+        question: "Who weighed more as a baby?",
         options: ["Karan", "Su"],
         correctAnswer: null
     },
@@ -19,7 +19,7 @@ const triviaQuestions = [
     },
     {
         id: 4,
-        question: "What sleeps more like a baby?",
+        question: "Who sleeps more like a baby?",
         options: ["Karan", "Su"],
         correctAnswer: null
     },
