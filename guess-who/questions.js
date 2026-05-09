@@ -67,7 +67,7 @@ const triviaQuestions = [
     },
     {
         id: 12,
-        question: "Who is going to buy the most baby gadgets?",
+        question: "Who picked the baby's name?",
         options: ["Karan", "Su"],
         correctAnswer: null
     },
