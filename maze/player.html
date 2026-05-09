@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Baby Shower Maze Game</title>
+    <title>SUSUSU Baby Shower Maze Game</title>
     <style>
         * {
             margin: 0;
@@ -279,7 +279,7 @@
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-        import { getFirestore, collection, addDoc, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+        import { getDatabase, ref, push, set, get, query, orderByChild, equalTo } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
 
         // Firebase configuration
         const firebaseConfig = {
@@ -294,7 +294,7 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const db = getDatabase(app);
 
         let gameData = null;
         let playerName = '';
@@ -337,20 +337,23 @@
             }
 
             try {
-                const q = query(
-                    collection(db, 'games'),
-                    where('code', '==', gameCode),
-                    where('active', '==', true)
-                );
+                const gamesRef = ref(db, 'games');
+                const snapshot = await get(gamesRef);
 
-                const querySnapshot = await getDocs(q);
+                let foundGame = null;
+                snapshot.forEach((childSnapshot) => {
+                    const data = childSnapshot.val();
+                    if (data.code === gameCode && data.active === true) {
+                        foundGame = { id: childSnapshot.key, ...data };
+                    }
+                });
 
-                if (querySnapshot.empty) {
+                if (!foundGame) {
                     showError('Invalid or inactive game code. Please check with the host.');
                     return;
                 }
 
-                gameData = { id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data() };
+                gameData = foundGame;
                 mazeSize = gameData.difficulty || 31;
 
                 // Load the static goal image
@@ -535,13 +538,15 @@
             document.getElementById('finalScore').textContent = score;
 
             try {
-                await addDoc(collection(db, 'results'), {
+                const resultsRef = ref(db, 'results');
+                const newResultRef = push(resultsRef);
+                await set(newResultRef, {
                     playerName: playerName,
                     gameCode: gameCode,
                     time: time,
                     moves: moves,
                     score: score,
-                    completedAt: new Date(),
+                    completedAt: Date.now(),
                     difficulty: mazeSize
                 });
             } catch (error) {
