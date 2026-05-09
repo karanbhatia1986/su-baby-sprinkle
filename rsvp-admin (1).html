@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSVP Admin - Baby Sprinkle</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-card .number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filters button {
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .filters button.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .filters button:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .export-btn {
+            padding: 10px 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .export-btn:hover {
+            background: #218838;
+        }
+
+        .rsvp-list {
+            margin-top: 20px;
+        }
+
+        .rsvp-card {
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .rsvp-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .rsvp-card.attending {
+            border-left-color: #28a745;
+        }
+
+        .rsvp-card.not-attending {
+            border-left-color: #dc3545;
+            opacity: 0.7;
+        }
+
+        .rsvp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .rsvp-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .rsvp-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .rsvp-status.yes {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .rsvp-status.no {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .rsvp-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .rsvp-detail {
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+        .rsvp-detail strong {
+            color: #333;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .rsvp-message {
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            font-style: italic;
+            color: #555;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state .icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .rsvp-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .filters {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .filters button, .search-box {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 RSVP Management</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">Baby Sprinkle Guest List</p>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="number" id="totalRsvps">0</div>
+                <div class="label">Total RSVPs</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="attendingCount">0</div>
+                <div class="label">Attending</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="notAttendingCount">0</div>
+                <div class="label">Not Attending</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="totalGuests">0</div>
+                <div class="label">Total Guests</div>
+            </div>
+        </div>
+
+        <div class="filters">
+            <button class="active" data-filter="all">All RSVPs</button>
+            <button data-filter="yes">Attending</button>
+            <button data-filter="no">Not Attending</button>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search by name...">
+            </div>
+            <button class="export-btn" onclick="exportToCSV()">📥 Export CSV</button>
+        </div>
+
+        <div class="loading" id="loading">Loading RSVPs...</div>
+
+        <div class="rsvp-list" id="rsvpList" style="display: none;"></div>
+
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="icon">📭</div>
+            <h2>No RSVPs Yet</h2>
+            <p>Waiting for guests to respond...</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyB47Qw26hMQcKr2sC4B8i772wrhTMKo8Ho",
+            authDomain: "su-baby-sprinkle.firebaseapp.com",
+            databaseURL: "https://su-baby-sprinkle-default-rtdb.firebaseio.com",
+            projectId: "su-baby-sprinkle",
+            storageBucket: "su-baby-sprinkle.firebasestorage.app",
+            messagingSenderId: "442824239099",
+            appId: "1:442824239099:web:b90411c9d63d96cdb8cd5e",
+            measurementId: "G-TQLMQ9K64W"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        let allRsvps = [];
+        let currentFilter = 'all';
+        let searchQuery = '';
+
+        // Load RSVPs from database
+        const rsvpsRef = ref(db, 'rsvps');
+        onValue(rsvpsRef, (snapshot) => {
+            allRsvps = [];
+            snapshot.forEach((childSnapshot) => {
+                const data = childSnapshot.val();
+                allRsvps.push({ id: childSnapshot.key, ...data });
+            });
+
+            // Sort by submission time (newest first)
+            allRsvps.sort((a, b) => b.submittedAt - a.submittedAt);
+
+            updateStats();
+            displayRsvps();
+            document.getElementById('loading').style.display = 'none';
+        });
+
+        function updateStats() {
+            const attending = allRsvps.filter(r => r.attending === 'yes');
+            const notAttending = allRsvps.filter(r => r.attending === 'no');
+            const totalGuests = attending.reduce((sum, r) => sum + (r.numGuests || 1), 0);
+
+            document.getElementById('totalRsvps').textContent = allRsvps.length;
+            document.getElementById('attendingCount').textContent = attending.length;
+            document.getElementById('notAttendingCount').textContent = notAttending.length;
+            document.getElementById('totalGuests').textContent = totalGuests;
+        }
+
+        function displayRsvps() {
+            const listContainer = document.getElementById('rsvpList');
+            const emptyState = document.getElementById('emptyState');
+
+            let filtered = allRsvps;
+
+            // Apply filter
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(r => r.attending === currentFilter);
+            }
+
+            // Apply search
+            if (searchQuery) {
+                filtered = filtered.filter(r =>
+                    r.name.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+            }
+
+            if (filtered.length === 0) {
+                listContainer.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            listContainer.style.display = 'block';
+            emptyState.style.display = 'none';
+
+            listContainer.innerHTML = filtered.map(rsvp => {
+                const date = new Date(rsvp.submittedAt);
+                const attendingClass = rsvp.attending === 'yes' ? 'attending' : 'not-attending';
+                const statusClass = rsvp.attending === 'yes' ? 'yes' : 'no';
+                const statusText = rsvp.attending === 'yes' ? '✓ Attending' : '✗ Not Attending';
+
+                return `
+                    <div class="rsvp-card ${attendingClass}">
+                        <div class="rsvp-header">
+                            <div class="rsvp-name">${rsvp.name}</div>
+                            <div class="rsvp-status ${statusClass}">${statusText}</div>
+                        </div>
+                        <div class="rsvp-details">
+                            ${rsvp.email ? `<div class="rsvp-detail"><strong>Email:</strong> ${rsvp.email}</div>` : ''}
+                            ${rsvp.phone ? `<div class="rsvp-detail"><strong>Phone:</strong> ${rsvp.phone}</div>` : ''}
+                            ${rsvp.attending === 'yes' ? `<div class="rsvp-detail"><strong>Guests:</strong> ${rsvp.numGuests} ${rsvp.numGuests === 1 ? 'person' : 'people'}</div>` : ''}
+                            ${rsvp.dietary ? `<div class="rsvp-detail"><strong>Dietary:</strong> ${rsvp.dietary}</div>` : ''}
+                            <div class="rsvp-detail"><strong>Submitted:</strong> ${date.toLocaleDateString()} ${date.toLocaleTimeString()}</div>
+                        </div>
+                        ${rsvp.message ? `<div class="rsvp-message"><strong>Message:</strong> "${rsvp.message}"</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Filter buttons
+        document.querySelectorAll('.filters button[data-filter]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filters button[data-filter]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                displayRsvps();
+            });
+        });
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            displayRsvps();
+        });
+
+        // Export to CSV
+        window.exportToCSV = function() {
+            if (allRsvps.length === 0) {
+                alert('No RSVPs to export.');
+                return;
+            }
+
+            const headers = ['Name', 'Email', 'Phone', 'Attending', 'Number of Guests', 'Dietary Restrictions', 'Message', 'Submitted At'];
+            const rows = allRsvps.map(rsvp => {
+                const date = new Date(rsvp.submittedAt);
+                return [
+                    rsvp.name,
+                    rsvp.email || '',
+                    rsvp.phone || '',
+                    rsvp.attending === 'yes' ? 'Yes' : 'No',
+                    rsvp.numGuests || '0',
+                    rsvp.dietary || '',
+                    rsvp.message || '',
+                    date.toLocaleString()
+                ];
+            });
+
+            let csvContent = headers.join(',') + '\n';
+            rows.forEach(row => {
+                csvContent += row.map(cell => `"${cell}"`).join(',') + '\n';
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `baby-sprinkle-rsvps-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        };
+    </script>
+</body>
+</html>
