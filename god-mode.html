@@ -479,7 +479,7 @@
         }
 
         // ========== FIREBASE AND ADMIN LOGIC ==========
-        function initializeAdmin() {
+        async function initializeAdmin() {
         const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js');
         const { getDatabase, ref, onValue } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js');
 
