@@ -6,7 +6,7 @@
     <title>You're Invited! Baby Sprinkle & Gender Reveal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:wght@400;600;700&family=Dancing+Script:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -192,22 +192,36 @@
         }
 
         .header h1 {
-            font-size: 3rem;
-            margin-bottom: 15px;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
             font-weight: 600;
-            letter-spacing: 3px;
+            letter-spacing: 1px;
             color: #8b5a8e;
-            text-transform: uppercase;
-            font-family: 'Playfair Display', serif;
+            text-transform: none;
+            font-family: 'Dancing Script', cursive;
+            line-height: 1.3;
+            text-shadow: 2px 2px 4px rgba(139, 90, 142, 0.1);
+        }
+
+        .header .twinkle-emoji {
+            display: block;
+            font-size: 2.5rem;
+            margin: 15px 0;
+            animation: twinkle 2s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
         }
 
         .header .subtitle {
-            font-size: 1.4rem;
-            font-style: normal;
-            font-weight: 300;
+            font-size: 1.3rem;
+            font-style: italic;
+            font-weight: 400;
             color: #6a8ab5;
             margin-bottom: 25px;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             font-family: 'Cormorant Garamond', serif;
         }
 
@@ -225,8 +239,8 @@
         }
 
         .photo-container {
-            width: 550px;
-            height: 550px;
+            width: 400px;
+            height: 400px;
             margin: 0 auto;
             border-radius: 50%;
             overflow: hidden;
@@ -567,6 +581,10 @@
 
         @media (max-width: 600px) {
             .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .header .twinkle-emoji {
                 font-size: 2rem;
             }
 
@@ -647,9 +665,9 @@
         <div class="decorative-top"></div>
 
         <div class="header">
-            <h1>Twinkle Twinkle</h1>
-            <div class="divider"></div>
-            <div class="subtitle">It's a sprinkle</div>
+            <h1>Twinkle Twinkle<br>It's a Sprinkle</h1>
+            <div class="twinkle-emoji">✨⭐✨</div>
+            <div class="subtitle">Join us for a magical celebration</div>
         </div>
 
         <div class="photo-section">
@@ -674,7 +692,7 @@
                     <span class="icon">📅</span>
                     <div class="content-text">
                         <strong>Date</strong>
-                        <div class="value">Saturday, May 30th, 2026</div>
+                        <div class="value">Friday, May 30th, 2026</div>
                     </div>
                 </div>
                 <div class="detail-item">
@@ -695,7 +713,7 @@
                     <span class="icon">👗</span>
                     <div class="content-text">
                         <strong>Dress Code</strong>
-                        <div class="value">Elevated Casual</div>
+                        <div class="value">Smart Casual</div>
                     </div>
                 </div>
             </div>
@@ -707,7 +725,7 @@
             <div class="registry-section">
                 <h3>Gift Registry</h3>
                 <p>Your presence is the greatest gift, but if you'd like to celebrate with us:</p>
-                <a href="https://www.amazon.com/baby-reg/sunila-bhatia-july-2026-weehawken/3U4UL4GBNS9RZ" target="_blank" class="registry-link" id="registryLink">View Our Registry</a>
+                <a href="https://www.amazon.com/baby-reg/your-registry-id" target="_blank" class="registry-link" id="registryLink">View Our Registry</a>
             </div>
 
             <div class="rsvp-section">
