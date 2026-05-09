@@ -2,808 +2,284 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>You're Invited! Baby Sprinkle & Gender Reveal</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:wght@400;600;700&family=Dancing+Script:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Baby Shower Maze Game</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(135deg, #ffc3e1 0%, #c3d9ff 100%);
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 10px;
+            touch-action: manipulation;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
             padding: 20px;
-            overflow-x: hidden;
-        }
-
-        /* Confetti Canvas */
-        #confetti-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-width: 600px;
             width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 9999;
-            display: none;
         }
 
-        /* Envelope Animation */
-        .envelope-wrapper {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            background: linear-gradient(135deg, #ffc3e1 0%, #c3d9ff 100%);
-            transition: opacity 0.5s ease-out;
-        }
-
-        .envelope-wrapper.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .envelope {
-            width: 300px;
-            height: 200px;
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-
-        .envelope:hover {
-            transform: scale(1.05);
-        }
-
-        .envelope-back {
-            width: 100%;
-            height: 100%;
-            background: white;
-            border: 3px solid #e8b4d4;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        .envelope-front {
-            width: 0;
-            height: 0;
-            border-left: 150px solid transparent;
-            border-right: 150px solid transparent;
-            border-bottom: 100px solid #ffe6f0;
-            position: absolute;
-            top: 0;
-            left: 0;
-            transform-origin: top center;
-            transition: transform 0.8s ease-out;
-            z-index: 3;
-        }
-
-        .envelope-front::after {
-            content: '';
-            position: absolute;
-            width: 280px;
-            height: 2px;
-            background: #e8b4d4;
-            top: 95px;
-            left: -140px;
-        }
-
-        .envelope.opening .envelope-front {
-            transform: rotateX(180deg);
-        }
-
-        .envelope-flap-top {
-            width: 0;
-            height: 0;
-            border-left: 153px solid transparent;
-            border-right: 153px solid transparent;
-            border-top: 103px solid #fff;
-            position: absolute;
-            top: 0;
-            left: -3px;
-            z-index: 2;
-            border-left-color: #c3d9ff;
-            border-right-color: #ffc3e1;
-        }
-
-        .envelope-message {
-            position: absolute;
-            top: 20%;
-            left: 50%;
-            transform: translateX(-50%);
+        h1 {
             text-align: center;
-            z-index: 1;
+            color: #ff6b9d;
+            margin-bottom: 20px;
+            font-size: clamp(1.5rem, 5vw, 2rem);
         }
 
-        .envelope-message h2 {
-            font-family: 'Playfair Display', serif;
-            color: #8b5a8e;
-            font-size: 1.8rem;
+        .entry-screen {
+            text-align: center;
+        }
+
+        .entry-screen input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            border: 2px solid #ff6b9d;
+            border-radius: 10px;
             margin-bottom: 10px;
-        }
-
-        .envelope-message p {
-            font-family: 'Cormorant Garamond', serif;
-            color: #6a8ab5;
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-        }
-
-        .tap-to-open {
-            font-family: 'Montserrat', sans-serif;
-            color: #8b5a8e;
-            font-size: 0.9rem;
+            text-align: center;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            animation: pulse 2s infinite;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
-        }
-
-        /* Main Invitation */
-        .invitation {
-            background: white;
-            max-width: 700px;
+        .entry-screen button {
             width: 100%;
-            border-radius: 0;
-            box-shadow: 0 25px 70px rgba(0,0,0,0.25);
-            overflow: hidden;
-            border: 8px solid #fff;
-            outline: 2px solid #e8b4d4;
-            opacity: 0;
-            transform: translateY(50px) scale(0.8);
-            transition: all 1s ease-out;
-        }
-
-        .invitation.show {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-
-        .decorative-top {
-            height: 15px;
-            background: linear-gradient(90deg, #ffc3e1 0%, #e8b4d4 25%, #c3d9ff 50%, #a8c5ff 75%, #ffc3e1 100%);
-        }
-
-        .header {
-            background: linear-gradient(135deg, #ffe6f0 0%, #e6f0ff 100%);
-            padding: 50px 40px 40px;
-            text-align: center;
-            color: #5a4a6a;
-            border-bottom: 3px double #e8b4d4;
-        }
-
-        .header h1 {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            color: #8b5a8e;
-            text-transform: none;
-            font-family: 'Dancing Script', cursive;
-            line-height: 1.3;
-            text-shadow: 2px 2px 4px rgba(139, 90, 142, 0.1);
-        }
-
-        .header .twinkle-emoji {
-            display: block;
-            font-size: 2.5rem;
-            margin: 15px 0;
-            animation: twinkle 2s infinite;
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(1.1); }
-        }
-
-        .header .subtitle {
-            font-size: 1.3rem;
-            font-style: italic;
-            font-weight: 400;
-            color: #6a8ab5;
-            margin-bottom: 25px;
-            letter-spacing: 1px;
-            font-family: 'Cormorant Garamond', serif;
-        }
-
-        .divider {
-            width: 100px;
-            height: 2px;
-            background: linear-gradient(90deg, #ffc3e1, #c3d9ff);
-            margin: 20px auto;
-        }
-
-        .photo-section {
-            text-align: center;
-            padding: 30px 40px 20px;
-            background: linear-gradient(180deg, #fff5fa 0%, #f5f9ff 100%);
-        }
-
-        .photo-container {
-            width: 550px;
-            height: 550px;
-            margin: 0 auto;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 10px solid white;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2),
-                        inset 0 0 0 4px #ffc3e1,
-                        inset 0 0 0 8px white,
-                        inset 0 0 0 12px #c3d9ff;
-        }
-
-        .photo-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .photo-placeholder {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #ffe6f0 0%, #e6f0ff 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 6rem;
-        }
-
-        .content {
-            padding: 40px 40px 30px;
-        }
-
-        .announcement {
-            text-align: center;
-            margin-bottom: 35px;
-        }
-
-        .announcement h2 {
-            color: #8b5a8e;
-            font-size: 2.2rem;
-            margin-bottom: 20px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            font-family: 'Playfair Display', serif;
-        }
-
-        .announcement p {
-            color: #5a4a6a;
-            font-size: 1.2rem;
-            font-style: normal;
-            line-height: 1.8;
-            font-weight: 300;
-        }
-
-        .details-box {
-            background: linear-gradient(135deg, #fff5fa 0%, #f5f9ff 100%);
-            padding: 35px;
-            border-radius: 0;
-            margin-bottom: 35px;
-            border: 2px solid #e8b4d4;
-            border-left: 6px solid #ffc3e1;
-            border-right: 6px solid #c3d9ff;
-        }
-
-        .detail-item {
-            margin: 20px 0;
-            display: flex;
-            align-items: flex-start;
+            padding: 15px;
             font-size: 1.1rem;
-            line-height: 1.8;
-        }
-
-        .detail-item .icon {
-            font-size: 1.8rem;
-            margin-right: 20px;
-            min-width: 35px;
-            text-align: center;
-        }
-
-        .detail-item .content-text {
-            flex: 1;
-        }
-
-        .detail-item strong {
-            color: #8b5a8e;
-            display: block;
-            margin-bottom: 5px;
-            font-size: 0.95rem;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            font-weight: 600;
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        .detail-item .value {
-            color: #5a4a6a;
-            font-size: 1.2rem;
-            font-weight: 300;
-            font-family: 'Cormorant Garamond', serif;
-        }
-
-        .special-note {
-            background: linear-gradient(135deg, #ffe6f0 0%, #e6f0ff 100%);
-            padding: 20px;
-            border-radius: 0;
-            text-align: center;
-            margin-bottom: 35px;
-            border-top: 2px solid #ffc3e1;
-            border-bottom: 2px solid #c3d9ff;
-        }
-
-        .special-note p {
-            color: #6a8ab5;
-            font-size: 1.1rem;
-            font-weight: bold;
-            margin: 0;
-            letter-spacing: 0.5px;
-        }
-
-        .registry-section {
-            background: linear-gradient(135deg, #fff5fa 0%, #f5f9ff 100%);
-            padding: 25px;
-            border-radius: 0;
-            text-align: center;
-            margin-bottom: 35px;
-            border: 2px solid #e8b4d4;
-        }
-
-        .registry-section h3 {
-            color: #8b5a8e;
-            font-size: 1.4rem;
-            margin-bottom: 15px;
-            font-family: 'Playfair Display', serif;
-            font-weight: 600;
-        }
-
-        .registry-section p {
-            color: #5a4a6a;
-            font-size: 1rem;
-            margin-bottom: 20px;
-            font-weight: 300;
-        }
-
-        .registry-link {
-            display: inline-block;
-            padding: 15px 40px;
-            background: linear-gradient(135deg, #8b5a8e 0%, #6a8ab5 100%);
-            color: white;
-            text-decoration: none;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 600;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-size: 1rem;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(139, 90, 142, 0.3);
-        }
-
-        .registry-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(139, 90, 142, 0.4);
-        }
-
-        .rsvp-section {
-            background: linear-gradient(135deg, #fff5fa 0%, #f5f9ff 100%);
-            padding: 40px 35px;
-            border-radius: 0;
-            border: 3px double #e8b4d4;
-        }
-
-        .rsvp-section h3 {
-            color: #8b5a8e;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 1.8rem;
-            font-weight: 600;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-family: 'Playfair Display', serif;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 10px;
-            color: #5a4a6a;
-            font-weight: bold;
-            font-size: 0.95rem;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e8b4d4;
-            border-radius: 0;
-            font-size: 1rem;
-            font-family: 'Montserrat', sans-serif;
-            transition: all 0.3s;
-            background: white;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #8b5a8e;
-            box-shadow: 0 0 0 3px rgba(139, 90, 142, 0.1);
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 90px;
-        }
-
-        .radio-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 12px;
-        }
-
-        .radio-option {
-            position: relative;
-        }
-
-        .radio-option input[type="radio"] {
-            position: absolute;
-            opacity: 0;
-        }
-
-        .radio-option label {
-            display: block;
-            padding: 18px 20px;
-            border: 2px solid #e8b4d4;
-            border-radius: 0;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
-            background: white;
-            color: #5a4a6a;
-            text-transform: none;
-        }
-
-        .radio-option:first-child label {
-            border-color: #c3d9ff;
-        }
-
-        .radio-option input[type="radio"]:checked + label {
-            background: linear-gradient(135deg, #8b5a8e 0%, #6a8ab5 100%);
-            color: white;
-            border-color: #8b5a8e;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(139, 90, 142, 0.3);
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(135deg, #8b5a8e 0%, #6a8ab5 100%);
+            background: #ff6b9d;
             color: white;
             border: none;
-            border-radius: 0;
-            font-size: 1.1rem;
-            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .entry-screen button:hover {
+            background: #ff4081;
+        }
+
+        .game-screen {
+            display: none;
+        }
+
+        .info-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #fff5f7;
+            border-radius: 10px;
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+        }
+
+        .timer, .moves {
+            font-weight: bold;
+            color: #ff6b9d;
+        }
+
+        #maze {
+            margin: 0 auto;
+            border: 3px solid #ff6b9d;
+            border-radius: 10px;
+            background: #ffffff;
+            touch-action: none;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .control-btn {
+            padding: 15px;
+            font-size: 1.5rem;
+            background: #ff6b9d;
+            color: white;
+            border: none;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s;
-            margin-top: 25px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            font-family: 'Montserrat', sans-serif;
-            box-shadow: 0 6px 20px rgba(139, 90, 142, 0.3);
+            touch-action: manipulation;
+            user-select: none;
         }
 
-        .submit-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(139, 90, 142, 0.4);
+        .control-btn:active {
+            transform: scale(0.95);
+            background: #ff4081;
         }
 
-        .submit-btn:active {
-            transform: translateY(0);
+        .control-btn:nth-child(2) {
+            grid-column: 2;
         }
 
-        .success-message {
-            display: none;
-            background: linear-gradient(135deg, #e6f9f0 0%, #e6f0ff 100%);
-            color: #2d5a3d;
-            padding: 30px;
-            border-radius: 0;
+        .control-btn:nth-child(3) {
+            grid-column: 2;
+            grid-row: 2;
+        }
+
+        .control-btn:nth-child(4) {
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        .control-btn:nth-child(5) {
+            grid-column: 3;
+            grid-row: 2;
+        }
+
+        .instructions {
             text-align: center;
-            margin-top: 25px;
-            border: 3px double #6ab58a;
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 10px;
         }
 
-        .success-message h3 {
-            color: #2d5a3d;
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 90%;
+            animation: bounceIn 0.5s;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal h2 {
+            color: #ff6b9d;
+            font-size: 2rem;
             margin-bottom: 15px;
-            font-size: 1.8rem;
         }
 
-        .success-message p {
+        .modal p {
+            font-size: 1.2rem;
+            margin: 10px 0;
+            color: #555;
+        }
+
+        .modal button {
+            margin-top: 20px;
+            padding: 15px 30px;
             font-size: 1.1rem;
-            line-height: 1.6;
+            background: #ff6b9d;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .player-name-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1rem;
+            border: 2px solid #ff6b9d;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
         }
 
         .error-message {
-            display: none;
-            background: #ffe6ea;
-            color: #8b4555;
-            padding: 15px;
-            border-radius: 0;
-            margin-top: 15px;
-            border: 2px solid #ffb3c1;
-            text-align: center;
+            color: #dc3545;
+            padding: 10px;
+            background: #ffe6e6;
+            border-radius: 8px;
+            margin-top: 10px;
         }
 
-        .footer {
-            text-align: center;
-            padding: 35px 20px;
-            color: #8b5a8e;
-            font-style: normal;
-            font-size: 1.1rem;
-            font-weight: 300;
-            font-family: 'Cormorant Garamond', serif;
-            background: linear-gradient(135deg, #ffe6f0 0%, #e6f0ff 100%);
-            border-top: 3px double #e8b4d4;
-        }
-
-        .decorative-bottom {
-            height: 15px;
-            background: linear-gradient(90deg, #ffc3e1 0%, #e8b4d4 25%, #c3d9ff 50%, #a8c5ff 75%, #ffc3e1 100%);
-        }
-
-        @media (max-width: 600px) {
-            .header h1 {
-                font-size: 2.5rem;
-            }
-
-            .header .twinkle-emoji {
-                font-size: 2rem;
-            }
-
-            .header .subtitle {
-                font-size: 1.1rem;
-            }
-
-            .photo-container {
-                width: 300px;
-                height: 300px;
-            }
-
-            .content {
-                padding: 30px 25px;
-            }
-
-            .details-box {
-                padding: 25px 20px;
-            }
-
-            .radio-group {
-                grid-template-columns: 1fr;
-            }
-
-            .rsvp-section {
-                padding: 30px 20px;
-            }
-
-            .envelope {
-                width: 250px;
-                height: 167px;
-            }
-
-            .envelope-front {
-                border-left: 125px solid transparent;
-                border-right: 125px solid transparent;
-                border-bottom: 83px solid #ffe6f0;
-            }
-
-            .envelope-flap-top {
-                border-left: 128px solid transparent;
-                border-right: 128px solid transparent;
-                border-top: 86px solid #fff;
-            }
-
-            .envelope-message h2 {
-                font-size: 1.4rem;
-            }
-
-            .envelope-message p {
-                font-size: 1rem;
-            }
+        .goal-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
         }
     </style>
 </head>
 <body>
-    <!-- Confetti Canvas -->
-    <canvas id="confetti-canvas"></canvas>
+    <div class="container">
+        <h1>🎉 Baby Shower Maze 🎉</h1>
 
-    <!-- Envelope Animation -->
-    <div class="envelope-wrapper" id="envelopeWrapper">
-        <div>
-            <div class="envelope-message">
-                <h2>You've Got Mail! 💌</h2>
-                <p>A special invitation awaits...</p>
-                <div class="tap-to-open">Tap to Open</div>
+        <div class="entry-screen" id="entryScreen">
+            <p style="margin-bottom: 20px; color: #666;">Enter your name and game code to start playing!</p>
+            <input type="text" id="playerNameInput" placeholder="Your Name" maxlength="30">
+            <input type="text" id="gameCodeInput" placeholder="Game Code (e.g., ABC123)" maxlength="6">
+            <button id="joinGameBtn">Join Game</button>
+            <div class="error-message" id="errorMessage" style="display: none;"></div>
+        </div>
+
+        <div class="game-screen" id="gameScreen">
+            <div class="info-bar">
+                <div class="timer">⏱️ Time: <span id="time">0</span>s</div>
+                <div class="moves">👣 Moves: <span id="moves">0</span></div>
             </div>
-            <div class="envelope" id="envelope">
-                <div class="envelope-back"></div>
-                <div class="envelope-flap-top"></div>
-                <div class="envelope-front"></div>
+
+            <canvas id="maze"></canvas>
+
+            <div class="controls">
+                <button class="control-btn" data-direction="up">⬆️</button>
+                <button class="control-btn" data-direction="down">⬇️</button>
+                <button class="control-btn" data-direction="left">⬅️</button>
+                <button class="control-btn" data-direction="right">➡️</button>
+            </div>
+
+            <div class="instructions">
+                Use arrow keys or touch buttons to guide the baby 👶 to the goal!
             </div>
         </div>
     </div>
 
-    <!-- Main Invitation -->
-    <div class="invitation" id="invitation">
-        <div class="decorative-top"></div>
-
-        <div class="header">
-            <h1>Twinkle Twinkle<br>It's a Sprinkle</h1>
-            <div class="twinkle-emoji">✨⭐✨</div>
-            <div class="subtitle">Join us for a magical celebration</div>
+    <div class="modal" id="winModal">
+        <div class="modal-content">
+            <h2>🎊 Congratulations! 🎊</h2>
+            <p>The baby found the parents!</p>
+            <p>Time: <span id="finalTime"></span>s</p>
+            <p>Moves: <span id="finalMoves"></span></p>
+            <p>Score: <span id="finalScore"></span></p>
+            <p style="margin-top: 20px; color: #999;">Your result has been saved to the leaderboard!</p>
         </div>
-
-        <div class="photo-section">
-            <div class="photo-container">
-                <img src="us.jpg" alt="Parents" id="parentsPhoto" style="display: block;">
-                <img src="us.JPG" alt="Parents" id="parentsPhotoAlt" style="display: none;">
-                <img src="us.png" alt="Parents" id="parentsPhotoPng" style="display: none;">
-                <div class="photo-placeholder" id="photoPlaceholder" style="display: none;">👨‍👩‍👶</div>
-            </div>
-        </div>
-
-        <div class="content">
-            <div class="announcement">
-                <h2>Our family is growing by two tiny feet!</h2>
-                <p>Baby smiles and giggles galore<br>
-                Sunila and Karan are adding one more!<br>
-                Big sister Arya has plenty to share<br>
-                It's just a sprinkle to show we care! 💕💙</p>
-            </div>
-
-            <div class="details-box">
-                <div class="detail-item">
-                    <span class="icon">📅</span>
-                    <div class="content-text">
-                        <strong>Date</strong>
-                        <div class="value">Saturday, May 30th, 2026</div>
-                    </div>
-                </div>
-                <div class="detail-item">
-                    <span class="icon">🕐</span>
-                    <div class="content-text">
-                        <strong>Time</strong>
-                        <div class="value">3:00 PM - 6:00 PM</div>
-                    </div>
-                </div>
-                <div class="detail-item">
-                    <span class="icon">📍</span>
-                    <div class="content-text">
-                        <strong>Location</strong>
-                        <div class="value">Jersey City, New Jersey</div>
-                    </div>
-                </div>
-                <div class="detail-item">
-                    <span class="icon">👗</span>
-                    <div class="content-text">
-                        <strong>Dress Code</strong>
-                        <div class="value">Elevated Casual</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="special-note">
-                <p>✨ Pink or Blue? Come find out with us! ✨</p>
-            </div>
-
-            <div class="registry-section">
-                <h3>Gift Registry</h3>
-                <p>Your presence is the greatest gift, but if you'd like to celebrate with us:</p>
-                <a href="https://www.amazon.com/baby-reg/your-registry-id" target="_blank" class="registry-link" id="registryLink">View Our Registry</a>
-            </div>
-
-            <div class="rsvp-section">
-                <h3>Kindly RSVP</h3>
-                <form id="rsvpForm">
-                    <div class="form-group">
-                        <label>Full Name *</label>
-                        <input type="text" id="guestName" required placeholder="Enter your full name">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Email Address</label>
-                        <input type="email" id="guestEmail" placeholder="your.email@example.com">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Phone Number</label>
-                        <input type="tel" id="guestPhone" placeholder="(555) 123-4567">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Will You Be Attending? *</label>
-                        <div class="radio-group">
-                            <div class="radio-option">
-                                <input type="radio" id="attendingYes" name="attending" value="yes" required>
-                                <label for="attendingYes">✓ Joyfully Accept</label>
-                            </div>
-                            <div class="radio-option">
-                                <input type="radio" id="attendingNo" name="attending" value="no">
-                                <label for="attendingNo">✗ Regretfully Decline</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group" id="guestsGroup" style="display: none;">
-                        <label>Number of Guests</label>
-                        <select id="numGuests">
-                            <option value="1">1 Guest</option>
-                            <option value="2">2 Guests</option>
-                            <option value="3">3 Guests</option>
-                            <option value="4">4 Guests</option>
-                            <option value="5">5 Guests</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Dietary Restrictions</label>
-                        <input type="text" id="dietary" placeholder="Vegetarian, allergies, etc.">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Message for the Parents</label>
-                        <textarea id="message" placeholder="Share your well wishes and excitement..."></textarea>
-                    </div>
-
-                    <button type="submit" class="submit-btn">Submit RSVP</button>
-
-                    <div class="error-message" id="errorMessage"></div>
-                </form>
-
-                <div class="success-message" id="successMessage">
-                    <h3>Thank You! 🎉</h3>
-                    <p>Your RSVP has been received.<br>We look forward to celebrating with you!</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer">
-            We can't wait to share this special moment with you 💕
-        </div>
-
-        <div class="decorative-bottom"></div>
     </div>
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-        import { getDatabase, ref, push, set } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+        import { getDatabase, ref, push, set, get, query, orderByChild, equalTo } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
 
         // Firebase configuration
         const firebaseConfig = {
@@ -820,171 +296,22 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Envelope Opening Animation
-        const envelope = document.getElementById('envelope');
-        const envelopeWrapper = document.getElementById('envelopeWrapper');
-        const invitation = document.getElementById('invitation');
-        const confettiCanvas = document.getElementById('confetti-canvas');
+        let gameData = null;
+        let playerName = '';
+        let gameCode = '';
+        let goalImage = null;
 
-        envelope.addEventListener('click', openEnvelope);
-
-        function openEnvelope() {
-            envelope.classList.add('opening');
-
-            setTimeout(() => {
-                envelopeWrapper.classList.add('hidden');
-                setTimeout(() => {
-                    envelopeWrapper.style.display = 'none';
-                    invitation.classList.add('show');
-                    startConfetti();
-                }, 500);
-            }, 800);
-        }
-
-        // Confetti Animation
-        function startConfetti() {
-            confettiCanvas.style.display = 'block';
-            const ctx = confettiCanvas.getContext('2d');
-            confettiCanvas.width = window.innerWidth;
-            confettiCanvas.height = window.innerHeight;
-
-            const confettiPieces = [];
-            const colors = ['#ffc3e1', '#c3d9ff', '#ffe6f0', '#e6f0ff', '#ffb3d9', '#a8c5ff'];
-            const confettiCount = 150;
-
-            class ConfettiPiece {
-                constructor() {
-                    this.x = Math.random() * confettiCanvas.width;
-                    this.y = -20;
-                    this.size = Math.random() * 8 + 5;
-                    this.speedY = Math.random() * 3 + 2;
-                    this.speedX = Math.random() * 2 - 1;
-                    this.color = colors[Math.floor(Math.random() * colors.length)];
-                    this.rotation = Math.random() * 360;
-                    this.rotationSpeed = Math.random() * 10 - 5;
-                }
-
-                update() {
-                    this.y += this.speedY;
-                    this.x += this.speedX;
-                    this.rotation += this.rotationSpeed;
-
-                    if (this.y > confettiCanvas.height) {
-                        this.y = -20;
-                        this.x = Math.random() * confettiCanvas.width;
-                    }
-                }
-
-                draw() {
-                    ctx.save();
-                    ctx.translate(this.x, this.y);
-                    ctx.rotate(this.rotation * Math.PI / 180);
-                    ctx.fillStyle = this.color;
-                    ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
-                    ctx.restore();
-                }
-            }
-
-            for (let i = 0; i < confettiCount; i++) {
-                confettiPieces.push(new ConfettiPiece());
-            }
-
-            function animateConfetti() {
-                ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-
-                confettiPieces.forEach(piece => {
-                    piece.update();
-                    piece.draw();
-                });
-
-                requestAnimationFrame(animateConfetti);
-            }
-
-            animateConfetti();
-
-            // Stop confetti after 10 seconds
-            setTimeout(() => {
-                confettiCanvas.style.display = 'none';
-            }, 10000);
-        }
-
-        // Image loading fallback
-        const img1 = document.getElementById('parentsPhoto');
-        const img2 = document.getElementById('parentsPhotoAlt');
-        const img3 = document.getElementById('parentsPhotoPng');
-        const placeholder = document.getElementById('photoPlaceholder');
-
-        img1.onerror = () => {
-            img1.style.display = 'none';
-            img2.style.display = 'block';
-
-            img2.onerror = () => {
-                img2.style.display = 'none';
-                img3.style.display = 'block';
-
-                img3.onerror = () => {
-                    img3.style.display = 'none';
-                    placeholder.style.display = 'flex';
-                };
-            };
-        };
-
-        // Show/hide guest count based on attendance
-        document.querySelectorAll('input[name="attending"]').forEach(radio => {
-            radio.addEventListener('change', (e) => {
-                const guestsGroup = document.getElementById('guestsGroup');
-                if (e.target.value === 'yes') {
-                    guestsGroup.style.display = 'block';
-                } else {
-                    guestsGroup.style.display = 'none';
-                }
-            });
-        });
-
-        // Handle form submission
-        document.getElementById('rsvpForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const name = document.getElementById('guestName').value.trim();
-            const email = document.getElementById('guestEmail').value.trim();
-            const phone = document.getElementById('guestPhone').value.trim();
-            const attending = document.querySelector('input[name="attending"]:checked')?.value;
-            const numGuests = document.getElementById('numGuests').value;
-            const dietary = document.getElementById('dietary').value.trim();
-            const message = document.getElementById('message').value.trim();
-
-            if (!name || !attending) {
-                showError('Please fill in all required fields.');
-                return;
-            }
-
-            try {
-                const rsvpData = {
-                    name: name,
-                    email: email || null,
-                    phone: phone || null,
-                    attending: attending,
-                    numGuests: attending === 'yes' ? parseInt(numGuests) : 0,
-                    dietary: dietary || null,
-                    message: message || null,
-                    submittedAt: Date.now(),
-                    timestamp: new Date().toISOString()
-                };
-
-                const rsvpsRef = ref(db, 'rsvps');
-                const newRsvpRef = push(rsvpsRef);
-                await set(newRsvpRef, rsvpData);
-
-                // Show success message
-                document.getElementById('rsvpForm').style.display = 'none';
-                document.getElementById('successMessage').style.display = 'block';
-
-                console.log('RSVP submitted successfully!');
-            } catch (error) {
-                console.error('Error submitting RSVP:', error);
-                showError('There was an error submitting your RSVP. Please try again.');
-            }
-        });
+        const canvas = document.getElementById('maze');
+        const ctx = canvas.getContext('2d');
+        let mazeSize = 11;
+        let cellSize;
+        let maze = [];
+        let playerPos = { x: 1, y: 1 };
+        let goalPos = { x: mazeSize - 2, y: mazeSize - 2 };
+        let moves = 0;
+        let time = 0;
+        let timerInterval;
+        let gameWon = false;
 
         function showError(message) {
             const errorDiv = document.getElementById('errorMessage');
@@ -995,11 +322,279 @@
             }, 5000);
         }
 
-        // Resize canvas on window resize
+        async function joinGame() {
+            playerName = document.getElementById('playerNameInput').value.trim();
+            gameCode = document.getElementById('gameCodeInput').value.trim().toUpperCase();
+
+            if (!playerName) {
+                showError('Please enter your name!');
+                return;
+            }
+
+            if (!gameCode) {
+                showError('Please enter the game code!');
+                return;
+            }
+
+            try {
+                const gamesRef = ref(db, 'games');
+                const snapshot = await get(gamesRef);
+
+                let foundGame = null;
+                snapshot.forEach((childSnapshot) => {
+                    const data = childSnapshot.val();
+                    if (data.code === gameCode && data.active === true) {
+                        foundGame = { id: childSnapshot.key, ...data };
+                    }
+                });
+
+                if (!foundGame) {
+                    showError('Invalid or inactive game code. Please check with the host.');
+                    return;
+                }
+
+                gameData = foundGame;
+                mazeSize = gameData.difficulty || 31;
+
+                // Load the static goal image
+                await loadGoalImage();
+
+                document.getElementById('entryScreen').style.display = 'none';
+                document.getElementById('gameScreen').style.display = 'block';
+
+                startGame();
+            } catch (error) {
+                console.error('Error joining game:', error);
+                showError('Error connecting to game. Please try again.');
+            }
+        }
+
+        function loadGoalImage() {
+            return new Promise((resolve) => {
+                goalImage = new Image();
+                goalImage.onload = () => resolve();
+                goalImage.onerror = () => {
+                    console.warn('Failed to load goal-image.jpg, trying goal-image.png...');
+                    goalImage.src = 'goal-image.png';
+                    goalImage.onerror = () => {
+                        console.warn('No goal image found, will use emoji fallback');
+                        goalImage = null;
+                        resolve();
+                    };
+                };
+                goalImage.src = 'goal-image.jpg';
+            });
+        }
+
+        function startGame() {
+            moves = 0;
+            time = 0;
+            gameWon = false;
+            document.getElementById('moves').textContent = moves;
+            document.getElementById('time').textContent = time;
+
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (!gameWon) {
+                    time++;
+                    document.getElementById('time').textContent = time;
+                }
+            }, 1000);
+
+            initCanvas();
+            generateMaze();
+            drawMaze();
+        }
+
+        function initCanvas() {
+            const container = canvas.parentElement;
+            const maxSize = Math.min(container.clientWidth - 40, 600);
+            cellSize = Math.floor(maxSize / mazeSize);
+            canvas.width = cellSize * mazeSize;
+            canvas.height = cellSize * mazeSize;
+        }
+
+        function generateMaze() {
+            maze = Array(mazeSize).fill().map(() => Array(mazeSize).fill(1));
+
+            const stack = [];
+            const start = { x: 1, y: 1 };
+            maze[start.y][start.x] = 0;
+            stack.push(start);
+
+            const directions = [
+                { dx: 0, dy: -2 },
+                { dx: 2, dy: 0 },
+                { dx: 0, dy: 2 },
+                { dx: -2, dy: 0 }
+            ];
+
+            while (stack.length > 0) {
+                const current = stack[stack.length - 1];
+                const neighbors = [];
+
+                for (const dir of directions) {
+                    const nx = current.x + dir.dx;
+                    const ny = current.y + dir.dy;
+
+                    if (nx > 0 && nx < mazeSize - 1 && ny > 0 && ny < mazeSize - 1 && maze[ny][nx] === 1) {
+                        neighbors.push({ x: nx, y: ny, dx: dir.dx, dy: dir.dy });
+                    }
+                }
+
+                if (neighbors.length > 0) {
+                    const next = neighbors[Math.floor(Math.random() * neighbors.length)];
+                    maze[next.y][next.x] = 0;
+                    maze[current.y + next.dy / 2][current.x + next.dx / 2] = 0;
+                    stack.push({ x: next.x, y: next.y });
+                } else {
+                    stack.pop();
+                }
+            }
+
+            playerPos = { x: 1, y: 1 };
+            goalPos = { x: mazeSize - 2, y: mazeSize - 2 };
+            maze[goalPos.y][goalPos.x] = 0;
+        }
+
+        function drawMaze() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let y = 0; y < mazeSize; y++) {
+                for (let x = 0; x < mazeSize; x++) {
+                    const posX = x * cellSize;
+                    const posY = y * cellSize;
+
+                    if (maze[y][x] === 1) {
+                        const gradient = ctx.createLinearGradient(posX, posY, posX + cellSize, posY + cellSize);
+                        gradient.addColorStop(0, '#c9d6ff');
+                        gradient.addColorStop(1, '#e2e2e2');
+                        ctx.fillStyle = gradient;
+                    } else {
+                        ctx.fillStyle = 'white';
+                    }
+
+                    ctx.fillRect(posX, posY, cellSize, cellSize);
+                    ctx.strokeStyle = '#ddd';
+                    ctx.strokeRect(posX, posY, cellSize, cellSize);
+                }
+            }
+
+            ctx.fillStyle = '#98fb98';
+            ctx.fillRect(goalPos.x * cellSize, goalPos.y * cellSize, cellSize, cellSize);
+
+            if (goalImage) {
+                // Make image bigger - no padding, fills entire cell
+                ctx.drawImage(
+                    goalImage,
+                    goalPos.x * cellSize,
+                    goalPos.y * cellSize,
+                    cellSize,
+                    cellSize
+                );
+            } else {
+                ctx.font = `${cellSize * 0.6}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('👨‍👩‍👶', (goalPos.x + 0.5) * cellSize, (goalPos.y + 0.5) * cellSize);
+            }
+
+            ctx.fillStyle = '#fffacd';
+            ctx.fillRect(playerPos.x * cellSize, playerPos.y * cellSize, cellSize, cellSize);
+            ctx.font = `${cellSize * 0.6}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('👶', (playerPos.x + 0.5) * cellSize, (playerPos.y + 0.5) * cellSize);
+        }
+
+        function movePlayer(dx, dy) {
+            if (gameWon) return;
+
+            const newX = playerPos.x + dx;
+            const newY = playerPos.y + dy;
+
+            if (newX >= 0 && newX < mazeSize && newY >= 0 && newY < mazeSize && maze[newY][newX] === 0) {
+                playerPos.x = newX;
+                playerPos.y = newY;
+                moves++;
+                document.getElementById('moves').textContent = moves;
+
+                if (playerPos.x === goalPos.x && playerPos.y === goalPos.y) {
+                    winGame();
+                }
+
+                drawMaze();
+            }
+        }
+
+        async function winGame() {
+            gameWon = true;
+            clearInterval(timerInterval);
+
+            const score = Math.max(1000 - (time * 2) - moves, 100);
+
+            document.getElementById('finalTime').textContent = time;
+            document.getElementById('finalMoves').textContent = moves;
+            document.getElementById('finalScore').textContent = score;
+
+            try {
+                const resultsRef = ref(db, 'results');
+                const newResultRef = push(resultsRef);
+                await set(newResultRef, {
+                    playerName: playerName,
+                    gameCode: gameCode,
+                    time: time,
+                    moves: moves,
+                    score: score,
+                    completedAt: Date.now(),
+                    difficulty: mazeSize
+                });
+            } catch (error) {
+                console.error('Error saving result:', error);
+            }
+
+            document.getElementById('winModal').classList.add('show');
+        }
+
+        document.getElementById('joinGameBtn').addEventListener('click', joinGame);
+
+        document.addEventListener('keydown', (e) => {
+            const keyMap = {
+                'ArrowUp': { dx: 0, dy: -1 },
+                'ArrowDown': { dx: 0, dy: 1 },
+                'ArrowLeft': { dx: -1, dy: 0 },
+                'ArrowRight': { dx: 1, dy: 0 }
+            };
+
+            if (keyMap[e.key]) {
+                e.preventDefault();
+                movePlayer(keyMap[e.key].dx, keyMap[e.key].dy);
+            }
+        });
+
+        document.querySelectorAll('.control-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const dirMap = {
+                    'up': { dx: 0, dy: -1 },
+                    'down': { dx: 0, dy: 1 },
+                    'left': { dx: -1, dy: 0 },
+                    'right': { dx: 1, dy: 0 }
+                };
+                const dir = dirMap[btn.dataset.direction];
+                movePlayer(dir.dx, dir.dy);
+            });
+        });
+
         window.addEventListener('resize', () => {
-            if (confettiCanvas.style.display === 'block') {
-                confettiCanvas.width = window.innerWidth;
-                confettiCanvas.height = window.innerHeight;
+            if (document.getElementById('gameScreen').style.display !== 'none') {
+                initCanvas();
+                drawMaze();
+            }
+        });
+
+        document.getElementById('gameCodeInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                joinGame();
             }
         });
     </script>
