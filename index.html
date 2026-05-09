@@ -247,11 +247,10 @@
             margin: 0 auto;
             border-radius: 15px;
             overflow: hidden;
-            border: 12px solid white;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.25),
-                        inset 0 0 0 5px #ffc3e1,
-                        inset 0 0 0 10px white,
-                        inset 0 0 0 15px #c3d9ff;
+            border: 12px solid transparent;
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(135deg, #ffc3e1 0%, #c3d9ff 100%) border-box;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
         }
 
         .photo-container img {
