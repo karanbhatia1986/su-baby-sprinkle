@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SUSUSU Baby Shower Maze Game</title>
+    <title>KKKK Baby Shower Maze Game</title>
     <style>
         * {
             margin: 0;
@@ -303,7 +303,7 @@
 
         const canvas = document.getElementById('maze');
         const ctx = canvas.getContext('2d');
-        let mazeSize = 31;
+        let mazeSize = 11;
         let cellSize;
         let maze = [];
         let playerPos = { x: 1, y: 1 };
@@ -484,13 +484,13 @@
             ctx.fillRect(goalPos.x * cellSize, goalPos.y * cellSize, cellSize, cellSize);
 
             if (goalImage) {
-                const padding = cellSize * 0.1;
+                // Make image bigger - no padding, fills entire cell
                 ctx.drawImage(
                     goalImage,
-                    goalPos.x * cellSize + padding,
-                    goalPos.y * cellSize + padding,
-                    cellSize - padding * 2,
-                    cellSize - padding * 2
+                    goalPos.x * cellSize,
+                    goalPos.y * cellSize,
+                    cellSize,
+                    cellSize
                 );
             } else {
                 ctx.font = `${cellSize * 0.6}px Arial`;
