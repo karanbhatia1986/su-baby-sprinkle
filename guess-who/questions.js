@@ -16,7 +16,7 @@ const triviaQuestions = [
         question: "Who will make the baby laugh first?",
         options: ["Karan", "Su"],
         correctAnswer: null
-    }
+    },
     {
         id: 4,
         question: "What sleeps more like a baby?",
