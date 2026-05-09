@@ -13,9 +13,123 @@
 
         body {
             font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ffc3e1 0%, #c3d9ff 100%);
             min-height: 100vh;
             padding: 20px;
+        }
+
+        /* Passcode Screen */
+        .passcode-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffc3e1 0%, #c3d9ff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .passcode-screen.hidden {
+            display: none;
+        }
+
+        .passcode-box {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            border: 8px solid white;
+            outline: 2px solid #e8b4d4;
+        }
+
+        .passcode-box h1 {
+            color: #8b5a8e;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .passcode-box p {
+            color: #6a8ab5;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .passcode-box .lock-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .passcode-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.3rem;
+            text-align: center;
+            border: 3px solid #e8b4d4;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            letter-spacing: 5px;
+            font-weight: bold;
+        }
+
+        .passcode-input:focus {
+            outline: none;
+            border-color: #8b5a8e;
+            box-shadow: 0 0 0 3px rgba(139, 90, 142, 0.2);
+        }
+
+        .passcode-submit {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #8b5a8e 0%, #6a8ab5 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .passcode-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 90, 142, 0.4);
+        }
+
+        .passcode-error {
+            display: none;
+            background: #ffe6ea;
+            color: #8b4555;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 2px solid #ffb3c1;
+        }
+
+        .passcode-error.show {
+            display: block;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .admin-content {
+            display: none;
+        }
+
+        .admin-content.visible {
+            display: block;
         }
 
         .container {
@@ -25,10 +139,12 @@
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            border: 8px solid white;
+            outline: 2px solid #e8b4d4;
         }
 
         h1 {
-            color: #667eea;
+            color: #8b5a8e;
             text-align: center;
             margin-bottom: 10px;
         }
@@ -41,7 +157,7 @@
         }
 
         .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #8b5a8e 0%, #6a8ab5 100%);
             color: white;
             padding: 20px;
             border-radius: 15px;
@@ -69,9 +185,9 @@
 
         .filters button {
             padding: 10px 20px;
-            border: 2px solid #667eea;
+            border: 2px solid #8b5a8e;
             background: white;
-            color: #667eea;
+            color: #8b5a8e;
             border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
@@ -79,12 +195,13 @@
         }
 
         .filters button.active {
-            background: #667eea;
+            background: linear-gradient(135deg, #8b5a8e 0%, #6a8ab5 100%);
             color: white;
+            border-color: #8b5a8e;
         }
 
         .filters button:hover {
-            background: #667eea;
+            background: linear-gradient(135deg, #8b5a8e 0%, #6a8ab5 100%);
             color: white;
         }
 
@@ -103,7 +220,7 @@
 
         .search-box input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #8b5a8e;
         }
 
         .export-btn {
@@ -126,7 +243,7 @@
 
         .rsvp-card {
             background: #f8f9fa;
-            border-left: 5px solid #667eea;
+            border-left: 5px solid #8b5a8e;
             padding: 20px;
             margin-bottom: 15px;
             border-radius: 10px;
@@ -220,7 +337,7 @@
         .loading {
             text-align: center;
             padding: 40px;
-            color: #667eea;
+            color: #8b5a8e;
             font-size: 1.2rem;
         }
 
@@ -242,6 +359,32 @@
     </style>
 </head>
 <body>
+    <!-- Passcode Screen -->
+    <div class="passcode-screen" id="passcodeScreen">
+        <div class="passcode-box">
+            <div class="lock-icon">🔒</div>
+            <h1>Admin Access</h1>
+            <p>Enter passcode to view RSVPs</p>
+            <form id="passcodeForm">
+                <input
+                    type="password"
+                    id="passcodeInput"
+                    class="passcode-input"
+                    placeholder="••••••"
+                    maxlength="20"
+                    autocomplete="off"
+                    required
+                >
+                <button type="submit" class="passcode-submit">Unlock</button>
+                <div class="passcode-error" id="passcodeError">
+                    ❌ Incorrect passcode. Please try again.
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Content -->
+    <div class="admin-content" id="adminContent">
     <div class="container">
         <h1>📋 RSVP Management</h1>
         <p style="text-align: center; color: #666; margin-bottom: 30px;">Baby Sprinkle Guest List</p>
@@ -285,10 +428,60 @@
             <p>Waiting for guests to respond...</p>
         </div>
     </div>
+    </div>
+    <!-- End Admin Content -->
 
     <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-        import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+        // ========== PASSCODE PROTECTION ==========
+        // CHANGE THIS TO YOUR DESIRED PASSCODE
+        const ADMIN_PASSCODE = "babysprinkle2026";
+
+        const passcodeScreen = document.getElementById('passcodeScreen');
+        const passcodeForm = document.getElementById('passcodeForm');
+        const passcodeInput = document.getElementById('passcodeInput');
+        const passcodeError = document.getElementById('passcodeError');
+        const adminContent = document.getElementById('adminContent');
+
+        // Check if already authenticated (stored in sessionStorage)
+        if (sessionStorage.getItem('adminAuthenticated') === 'true') {
+            unlockAdmin();
+        }
+
+        passcodeForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const enteredPasscode = passcodeInput.value.trim();
+
+            if (enteredPasscode === ADMIN_PASSCODE) {
+                // Correct passcode
+                sessionStorage.setItem('adminAuthenticated', 'true');
+                unlockAdmin();
+            } else {
+                // Wrong passcode
+                passcodeError.classList.add('show');
+                passcodeInput.value = '';
+                passcodeInput.classList.add('shake');
+
+                setTimeout(() => {
+                    passcodeError.classList.remove('show');
+                }, 3000);
+
+                setTimeout(() => {
+                    passcodeInput.classList.remove('shake');
+                }, 500);
+            }
+        });
+
+        function unlockAdmin() {
+            passcodeScreen.classList.add('hidden');
+            adminContent.classList.add('visible');
+            // Initialize Firebase and load data
+            initializeAdmin();
+        }
+
+        // ========== FIREBASE AND ADMIN LOGIC ==========
+        function initializeAdmin() {
+        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js');
+        const { getDatabase, ref, onValue } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js');
 
         // Firebase configuration
         const firebaseConfig = {
@@ -440,6 +633,8 @@
             a.click();
             window.URL.revokeObjectURL(url);
         };
+
+        } // End initializeAdmin function
     </script>
 </body>
 </html>
