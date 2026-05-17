@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Who Knows Mommy Best? 🌸</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="flower-decoration top-left"></div>
+    <div class="flower-decoration top-right"></div>
+    <div class="flower-decoration bottom-left"></div>
+    <div class="flower-decoration bottom-right"></div>
+
+    <!-- Welcome Screen -->
+    <div id="welcome-screen" class="screen active">
+        <div class="container">
+            <h1 class="game-title">Who Knows Mommy Best?</h1>
+            <div class="subtitle">Baby Sprinkle Game 🌸</div>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="showPlayerJoin()">Play Game</button>
+                <button class="btn btn-secondary" onclick="showHostLogin()">Host Mode</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Player Join Screen -->
+    <div id="player-join-screen" class="screen">
+        <div class="container">
+            <h2 class="screen-title">Join the Game</h2>
+            <div class="form-card">
+                <input type="text" id="player-name" class="input-field" placeholder="Enter your name" />
+                <button class="btn btn-primary" onclick="startPlayerGame()">Start Playing</button>
+                <button class="btn btn-text" onclick="showWelcome()">Back</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Player Game Screen -->
+    <div id="player-game-screen" class="screen">
+        <div class="container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="question-card">
+                <div class="question-number" id="question-number">Question 1 of 10</div>
+                <h2 class="question-text" id="question-text"></h2>
+                <div class="choices" id="choices"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thank You Screen -->
+    <div id="thank-you-screen" class="screen">
+        <div class="container">
+            <div class="thank-you-card">
+                <div class="thank-you-icon">🎉</div>
+                <h2>Thank You for Playing!</h2>
+                <p>Your answers have been submitted.</p>
+                <p class="waiting-text">Waiting for the host to reveal scores...</p>
+                <div id="player-score-display" class="score-display hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Host Login Screen -->
+    <div id="host-login-screen" class="screen">
+        <div class="container">
+            <h2 class="screen-title">Host Login</h2>
+            <div class="form-card">
+                <input type="password" id="host-password" class="input-field" placeholder="Enter host password" />
+                <button class="btn btn-primary" onclick="hostLogin()">Login</button>
+                <button class="btn btn-text" onclick="showWelcome()">Back</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Host Dashboard Screen -->
+    <div id="host-dashboard-screen" class="screen">
+        <div class="container">
+            <h2 class="screen-title">Host Dashboard</h2>
+            <div class="host-controls">
+                <button class="btn btn-primary" onclick="revealScores()">🎊 Reveal Scores to Players</button>
+                <button class="btn btn-secondary" onclick="resetGame()">🔄 Reset Game</button>
+            </div>
+            <div class="leaderboard-card">
+                <h3>🏆 Leaderboard</h3>
+                <div id="leaderboard" class="leaderboard"></div>
+            </div>
+            <div class="stats-card">
+                <h3>📊 Game Statistics</h3>
+                <div id="game-stats" class="stats"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confetti Canvas -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <script src="config.js"></script>
+    <script src="questions.js"></script>
+    <script src="confetti.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
