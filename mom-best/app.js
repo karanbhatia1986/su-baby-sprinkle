@@ -67,8 +67,21 @@ function displayQuestion() {
 
     question.choices.forEach((choice, index) => {
         const button = document.createElement('button');
-        button.className = 'choice-btn';
-        button.textContent = choice;
+        const colorClass = index === 0 ? 'pink' : 'blue';
+        button.className = `choice-btn ${colorClass}`;
+
+        // Create heart icon
+        const heartIcon = document.createElement('div');
+        heartIcon.className = 'heart-icon';
+        heartIcon.textContent = '💖';
+
+        // Create choice text
+        const choiceText = document.createElement('div');
+        choiceText.className = 'choice-text';
+        choiceText.textContent = choice;
+
+        button.appendChild(heartIcon);
+        button.appendChild(choiceText);
         button.onclick = () => selectAnswer(index);
         choicesContainer.appendChild(button);
     });
