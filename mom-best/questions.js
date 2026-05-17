@@ -46,5 +46,17 @@ const questions = [
         question: "When stressed, mommy...",
         choices: ["Takes a nap", "Goes for a walk"],
         correctAnswer: 0
+    },
+    {
+        id: 9,
+        question: "What will be mommy's pick?",
+        choices: ["New shoes", "New purse"],
+        correctAnswer: 1
+    },
+    {
+        id: 10,
+        question: "On movie night, which does mommy choose?",
+        choices: ["Chick flick", "Horror film"],
+        correctAnswer: 1
     }
 ];
