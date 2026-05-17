@@ -9,54 +9,42 @@ const questions = [
         id: 2,
         question: "Mommy is a...",
         choices: ["Coffee drinker", "Tea drinker"],
-        correctAnswer: 0
+        correctAnswer: 1
     },
     {
         id: 3,
         question: "For a night out, mommy would choose...",
         choices: ["A fancy restaurant", "A cozy movie night at home"],
-        correctAnswer: 1
-    },
-    {
-        id: 4,
-        question: "Mommy's favorite type of music is...",
-        choices: ["Pop hits", "Classic rock"],
         correctAnswer: 0
     },
     {
-        id: 5,
+        id: 4,
         question: "When it comes to shopping, mommy is...",
         choices: ["A quick decision maker", "A careful browser"],
         correctAnswer: 1
     },
     {
-        id: 6,
+        id: 5,
         question: "Mommy prefers...",
         choices: ["Sweet treats", "Salty snacks"],
-        correctAnswer: 0
+        correctAnswer: 1
     },
     {
-        id: 7,
+        id: 6,
         question: "For vacation, mommy would pick...",
         choices: ["Beach paradise", "Mountain adventure"],
         correctAnswer: 0
     },
     {
-        id: 8,
+        id: 7,
         question: "Mommy's ideal weekend includes...",
         choices: ["Being social with friends", "Relaxing with family"],
         correctAnswer: 1
     },
     {
-        id: 9,
+        id: 8,
         question: "When stressed, mommy...",
         choices: ["Takes a nap", "Goes for a walk"],
         correctAnswer: 0
-    },
-    {
-        id: 10,
-        question: "Mommy's parenting style will be...",
-        choices: ["Structured and scheduled", "Go-with-the-flow"],
-        correctAnswer: 1
     }
 ];
