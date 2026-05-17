@@ -138,16 +138,47 @@ function listenForScoreReveal() {
 function displayPlayerScore() {
     const correctCount = playerAnswers.filter(a => a.isCorrect).length;
     const score = correctCount * 10;
+    const percentage = (correctCount / questions.length) * 100;
+
+    // Determine achievement level
+    let achievement = '';
+    let icon = '';
+    if (percentage === 100) {
+        achievement = 'Perfect Score! 🏆';
+        icon = '👑';
+    } else if (percentage >= 80) {
+        achievement = 'Amazing! 🌟';
+        icon = '⭐';
+    } else if (percentage >= 60) {
+        achievement = 'Great Job! 💖';
+        icon = '💖';
+    } else if (percentage >= 40) {
+        achievement = 'Good Try! 💙';
+        icon = '💙';
+    } else {
+        achievement = 'Nice Effort! 🌸';
+        icon = '🌸';
+    }
 
     const scoreDisplay = document.getElementById('player-score-display');
     scoreDisplay.innerHTML = `
-        <h3>Your Score</h3>
-        <div class="score">${score} points</div>
-        <p>You got ${correctCount} out of ${questions.length} correct!</p>
+        <div class="score-icon">${icon}</div>
+        <h3>Your Score Revealed!</h3>
+        <div class="score-container">
+            <div class="score">${score}</div>
+        </div>
+        <div class="score-details">
+            You got <strong>${correctCount} out of ${questions.length}</strong> correct!
+        </div>
+        <div class="achievement-badge">${achievement}</div>
     `;
     scoreDisplay.classList.remove('hidden');
 
-    confetti.burst(200, window.innerWidth / 2, window.innerHeight / 2);
+    // Multiple confetti bursts for celebration!
+    setTimeout(() => confetti.burst(150, window.innerWidth / 2, window.innerHeight / 2), 100);
+    setTimeout(() => confetti.burst(100, window.innerWidth * 0.3, window.innerHeight * 0.6), 300);
+    setTimeout(() => confetti.burst(100, window.innerWidth * 0.7, window.innerHeight * 0.6), 500);
+    setTimeout(() => confetti.continuous(2000), 700);
 }
 
 // Host Functions
