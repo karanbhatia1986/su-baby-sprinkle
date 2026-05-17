@@ -3,7 +3,7 @@ class ConfettiCannon {
         this.canvas = document.getElementById('confetti-canvas');
         this.ctx = this.canvas.getContext('2d');
         this.particles = [];
-        this.colors = ['#E8B4BC', '#C9A0B6', '#B8A4C9', '#F9F5F6', '#D4AF37', '#90C695'];
+        this.colors = ['#FF1493', '#FF69B4', '#1E90FF', '#87CEEB', '#FFD700', '#FF6FFF', '#00BFFF', '#FFC0CB'];
         this.shapes = ['circle', 'square', 'triangle'];
         this.resize();
         window.addEventListener('resize', () => this.resize());
