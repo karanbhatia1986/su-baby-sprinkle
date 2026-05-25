@@ -1,61 +1,61 @@
 const questions = [
     {
         id: 1,
-        question: "Does mommy prefer to...",
+        question: "Does Su prefer to...",
         choices: ["Sleep in late", "Wake up early"],
         correctAnswer: 0
     },
     {
         id: 2,
-        question: "Mommy is a...",
-        choices: ["Coffee drinker", "Tea drinker"],
+        question: "Su prefers...",
+        choices: ["Hot Coffee", "Cold Coffee"],
         correctAnswer: 1
     },
     {
         id: 3,
-        question: "For a night out, mommy would choose...",
+        question: "For a night out, Su would choose...",
         choices: ["A fancy restaurant", "A cozy movie night at home"],
         correctAnswer: 0
     },
     {
         id: 4,
-        question: "When it comes to shopping, mommy is...",
+        question: "When it comes to shopping, Su is...",
         choices: ["A quick decision maker", "A careful browser"],
         correctAnswer: 1
     },
     {
         id: 5,
-        question: "Mommy prefers...",
-        choices: ["Sweet treats", "Salty snacks"],
-        correctAnswer: 1
-    },
-    {
-        id: 6,
-        question: "For vacation, mommy would pick...",
-        choices: ["Beach paradise", "Mountain adventure"],
+        question: "You see Su having a desert, what would that be?",
+        choices: ["Jalebi", "Kulfi Falooda"],
         correctAnswer: 0
     },
     {
+        id: 6,
+        question: "What jewelery will Su prefer",
+        choices: ["Earring", "Neck piece"],
+        correctAnswer: 1
+    },
+    {
         id: 7,
-        question: "Mommy's ideal weekend includes...",
+        question: "Su's ideal weekend includes...",
         choices: ["Being social with friends", "Relaxing with family"],
         correctAnswer: 1
     },
     {
         id: 8,
-        question: "When stressed, mommy...",
+        question: "When stressed, Su...",
         choices: ["Takes a nap", "Goes for a walk"],
         correctAnswer: 0
     },
     {
         id: 9,
-        question: "What will be mommy's pick?",
+        question: "What will be Su's pick?",
         choices: ["New shoes", "New purse"],
         correctAnswer: 1
     },
     {
         id: 10,
-        question: "On movie night, which does mommy choose?",
+        question: "On movie night, which does Su choose?",
         choices: ["Chick flick", "Horror film"],
         correctAnswer: 1
     }
