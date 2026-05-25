@@ -49,8 +49,8 @@ const questions = [
     },
     {
         id: 9,
-        question: "What will be Su's pick?",
-        choices: ["New shoes", "New purse"],
+        question: "What is Su's comfort food?",
+        choices: ["Rajma Chawal", " Paratha"],
         correctAnswer: 1
     },
     {
