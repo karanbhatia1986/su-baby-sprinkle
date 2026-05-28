@@ -484,13 +484,16 @@
             ctx.fillRect(goalPos.x * cellSize, goalPos.y * cellSize, cellSize, cellSize);
 
             if (goalImage) {
-                // Make image bigger - no padding, fills entire cell
+                // Make image bigger - spans 3x3 cells centered on goal position
+                const imageSize = cellSize * 3;
+                const offsetX = goalPos.x * cellSize - cellSize;
+                const offsetY = goalPos.y * cellSize - cellSize;
                 ctx.drawImage(
                     goalImage,
-                    goalPos.x * cellSize,
-                    goalPos.y * cellSize,
-                    cellSize,
-                    cellSize
+                    offsetX,
+                    offsetY,
+                    imageSize,
+                    imageSize
                 );
             } else {
                 ctx.font = `${cellSize * 0.6}px Arial`;
