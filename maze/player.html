@@ -484,10 +484,10 @@
             ctx.fillRect(goalPos.x * cellSize, goalPos.y * cellSize, cellSize, cellSize);
 
             if (goalImage) {
-                // Make image bigger - spans 9x9 cells centered on goal position
-                const imageSize = cellSize * 9;
-                const offsetX = goalPos.x * cellSize - cellSize * 4;
-                const offsetY = goalPos.y * cellSize - cellSize * 4;
+                // Make image bigger - spans 3x3 cells centered on goal position
+                const imageSize = cellSize * 3;
+                const offsetX = goalPos.x * cellSize - cellSize;
+                const offsetY = goalPos.y * cellSize - cellSize;
                 ctx.drawImage(
                     goalImage,
                     offsetX,
