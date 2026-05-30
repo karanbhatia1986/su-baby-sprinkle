@@ -14,13 +14,13 @@ const triviaQuestions = [
     {
         id: 3,
         question: "Who will make the baby laugh first?",
-        options: ["Karan", "Su"],
+        options: ["Karan", "Su", "Arya"],
         correctAnswer: null
     },
     {
         id: 4,
         question: "Who sleeps more like a baby?",
-        options: ["Karan", "Su"],
+        options: ["Karan", "Su", "Arya"],
         correctAnswer: null
     },
     {
@@ -38,7 +38,7 @@ const triviaQuestions = [
     {
         id: 7,
         question: "Who can sleep through loud noises and baby cry?",
-        options: ["Karan", "Su"],
+        options: ["Karan", "Su", "Arya"],
         correctAnswer: null
     },
     {
@@ -49,38 +49,44 @@ const triviaQuestions = [
     },
     {
         id: 9,
-        question: "Who was the more difficult teenager?",
-        options: ["Karan", "Su"],
+        question: "Who is most likely to scold the baby first?",
+        options: ["Karan", "Su", "Arya"],
         correctAnswer: null
     },
     {
         id: 10,
         question: "Who is most likely to accidently teach the baby a curse word?",
-        options: ["Karan", "Su"],
+        options: ["Karan", "Su", "Arya"],
         correctAnswer: null
     },
     {
         id: 11,
         question: "Who is most likely to sneak baby's first sweet treat?",
-        options: ["Karan", "Su"],
+        options: ["Karan", "Su", "Arya"],
         correctAnswer: null
     },
     {
         id: 12,
         question: "Who picked the baby's name?",
-        options: ["Karan", "Su"],
+        options: ["Karan", "Su", "Arya"],
         correctAnswer: null
     },
     {
         id: 13,
         question: "Who will pick up the baby stuff around the house more?",
-        options: ["Karan", "Su"],
+        options: ["Karan", "Su", "Arya"],
         correctAnswer: null
     },
     {
         id: 14,
         question: "Who will teach the baby how to dance?",
-        options: ["Karan", "Su"],
+        options: ["Karan", "Su", "Arya"],
+        correctAnswer: null
+    },
+    {
+        id: 15,
+        question: "?",
+        options: ["Karan", "Su", "Arya"],
         correctAnswer: null
     }
 ];
