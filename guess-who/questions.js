@@ -19,14 +19,14 @@ const triviaQuestions = [
     },
     {
         id: 4,
-        question: "Who sleeps more like a baby?",
+        question: "Who would sleep through loud noises and baby cry?",
         options: ["Karan", "Su", "Arya"],
         correctAnswer: null
     },
     {
         id: 5,
         question: "Who will have an easier time letting baby cry?",
-        options: ["Karan", "Su"],
+        options: ["Karan", "Su", "Arya"],
         correctAnswer: null
     },
     {
@@ -37,56 +37,56 @@ const triviaQuestions = [
     },
     {
         id: 7,
-        question: "Who can sleep through loud noises and baby cry?",
-        options: ["Karan", "Su", "Arya"],
-        correctAnswer: null
-    },
-    {
-        id: 8,
         question: "Who will do the most baby talk?",
         options: ["Karan", "Su", "Arya"],
         correctAnswer: null
     },
     {
-        id: 9,
+        id: 8,
         question: "Who is most likely to scold the baby first?",
         options: ["Karan", "Su", "Arya"],
         correctAnswer: null
     },
     {
-        id: 10,
+        id: 9,
         question: "Who is most likely to accidently teach the baby a curse word?",
         options: ["Karan", "Su", "Arya"],
         correctAnswer: null
     },
     {
-        id: 11,
+        id: 10,
         question: "Who is most likely to sneak baby's first sweet treat?",
         options: ["Karan", "Su", "Arya"],
         correctAnswer: null
     },
     {
-        id: 12,
+        id: 11,
         question: "Who picked the baby's name?",
         options: ["Karan", "Su", "Arya"],
         correctAnswer: null
     },
     {
-        id: 13,
+        id: 12,
         question: "Who will pick up the baby stuff around the house more?",
         options: ["Karan", "Su", "Arya"],
         correctAnswer: null
     },
     {
-        id: 14,
+        id: 13,
         question: "Who will teach the baby how to dance?",
         options: ["Karan", "Su", "Arya"],
         correctAnswer: null
     },
     {
+        id: 14,
+        question: "Who will be more likely to post baby pictures online?",
+        options: ["Karan", "Su"],
+        correctAnswer: null
+    },
+    {
         id: 15,
-        question: "?",
-        options: ["Karan", "Su", "Arya"],
+        question: "Who will be more likely to use the baby as an excuse to be late to social events?",
+        options: ["Karan", "Su"],
         correctAnswer: null
     }
 ];
